@@ -3,7 +3,7 @@ ini_set("session.cookie_lifetime",32400);
 date_default_timezone_set('America/Chihuahua');
 define("PRODUCCION", "SVR02");
 define("DESARROLLO", "AOS06");
-define("CONFIG",DESARROLLO );  
+define("CONFIG",PRODUCCION );  
 (CONFIG==DESARROLLO) ? define("ACTUAL","PRUEBAS") : define("ACTUAL","PRODUCCION");
 (CONFIG==DESARROLLO) ? define("APP_INI","/configs/application_dev.ini") : define("APP_INI","/configs/application.ini");
 // Define path to application directory
@@ -25,7 +25,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
 require_once 'Zend/Application.php';
 
 
-echo "inax";
+echo PRODUCCION;
 // Create application, bootstrap, and run
 $application = new Zend_Application( APPLICATION_ENV,APPLICATION_PATH . ''.APP_INI);
 Zend_Session::start();

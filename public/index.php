@@ -30,4 +30,4 @@ Zend_Session::start();
 require_once APPLICATION_PATH.'/models/UserConstants.php';
 //require_once APPLICATION_PATH.'/../library/includes/atpWs/DynamicsWSConsumer.php';
 /* this line run the appplication for all*/
-//$application->bootstrap()->run();
+$application->bootstrap()->run();

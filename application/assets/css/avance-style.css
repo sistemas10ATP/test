@@ -1,0 +1,219 @@
+/*
+
+Autor: Efraín Adrián Campa Quezada;
+ 
+*/ 
+.title-header-pant label{
+    font-size: 2em !important;
+    color: black !important;
+}
+.bar-subtitle{
+    color: #111 !important;
+    background-color: #e6e6e6 !important;
+}
+
+#login-panel{
+	padding-top: 16%;
+	min-height:50%;
+}
+
+
+#logo-avance{
+	height: 64px;
+	background-image: url(../img/avance-logo-login.png);
+	background-repeat: no-repeat;
+}
+
+#user_id{
+	height:100%;
+}
+
+.progress {
+  height: 25px;
+  background-color: #ffccbc  ; /* #acece6;*/
+  margin:0;
+ }
+
+  .progress .determinate {
+    background-color: #ff7043 ; 
+}
+
+.ui-autocomplete {
+	position: absolute;
+	top: 0;
+	left: 0;
+	cursor: default;
+}
+.ui-autocomplete {
+  z-index: 10000000;
+}
+
+#almacenes{
+	max-height: 100px;
+	overflow: scroll;
+}
+
+#OrderLine-Header{
+	height: 36px;
+	margin: 0px;
+	padding: 0px;
+}
+
+[id*=unidad]{
+	min-width: 60px;
+}
+[id*=preciovta]{
+  min-width: 80px;
+}
+.select-dropdown{
+  min-width: 100px; 
+}
+#articulos{
+	padding: 0 15px 0 50px;
+}
+.ui-autocomplete {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  * html .ui-autocomplete {
+    height: 300px;
+  }
+
+#EnviarForm{
+	margin-top: 1rem;
+}
+ .input-table {
+  font-size: 12px !important;
+}
+
+.filter-table .quick { margin-left: 0.5em; font-size: 0.8em; text-decoration: none; }
+.fitler-table .quick:hover { text-decoration: underline; }
+td.alt { background-color: #cfd8dc; /*background-color: rgba(255, 255, 0, 0.2);*/ }
+label {
+    width: 100%;
+}
+.input-field label {
+    font-size: 0.8rem;
+    -webkit-transform: translateY(-140%);
+    -moz-transform: translateY(-140%);
+    -ms-transform: translateY(-140%);
+    -o-transform: translateY(-140%);
+    transform: translateY(-140%);
+}
+
+
+.lote-dropdown-content {
+  background-color: #FFFFFF;
+  margin: 0;
+  display: none;
+  min-width: 100px;
+  min-height: 200px;
+  min-width: 550px !important;
+  height: auto !important; 
+  opacity: 1;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 3;
+  border: 1px solid #d0d0d0;
+  will-change: width, height;
+  padding: 0 15px 0 15px; }
+
+  .comentarios-dropdown-content{
+  background-color: #FFFFFF;
+  margin: 0;
+  display: none;
+  min-height: 100px;
+  min-width: 250px !important;
+  height: auto !important; 
+  opacity: 1;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 3;
+  border: 1px solid #d0d0d0;
+  will-change: width, height;
+  padding: 0 15px 0 15px; }
+
+.punitario-dropdown-content{
+  background-color: #FFFFFF;
+  margin: 0;
+  display: none;
+  min-height: 100px;
+  min-width: 250px !important;
+  height: auto !important; 
+  opacity: 1;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 3;
+  border: 1px solid #d0d0d0;
+  will-change: width, height;
+  padding: 0 15px 0 15px; }
+
+.dir-dropdown-content{
+   background-color: #FFFFFF;
+  margin: 0;
+  display: none;
+  min-height: 100px;
+  max-height: 200px;
+  overflow-y: scroll;
+  min-width: 800px !important;
+  max-width: 800px !important;
+  /*overflow-x: scroll;*/
+  /*height: auto !important; */
+  opacity: 0;
+  position: absolute;
+  /*white-space: nowrap;*/
+  z-index: 3;
+  border: 1px solid #d0d0d0;
+  /*will-change: width, height;*/
+  padding: 0 15px 0 15px; }
+
+
+
+#totals {
+  font-size: 1.24rem;
+  line-height: 1.804rem;
+  margin: 0.82rem 0 0.656rem 0;
+}
+
+
+  [type="checkbox"] + label {
+    font-size: 12px !important;
+    color: black !important;
+    }
+
+    #LineaCheck{
+      margin-top: 0px;
+    }
+
+#imgTiket canvas{
+                width: 300px !important;
+            }
+            .expandirMenu {
+		width: 240px;
+		-webkit-transition: all 1s ease;
+		-moz-transition: all 1s ease;
+		-ms-transition: all 1s ease;
+		-o-transition: all 1s ease;
+		transition: all 1s ease;
+	}
+
+	.compactarMenu {
+		width: 58px;
+		-webkit-transition: all 1s ease;
+		-moz-transition: all 1s ease;
+		-ms-transition: all 1s ease;
+		-o-transition: all 1s ease;
+		transition: all 1s ease;
+	}
+
+	#logoIcon {
+		width: 20px;
+	}
+
+	.compactarHMF {
+		padding-left: 55px;
+	} 

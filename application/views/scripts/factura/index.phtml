@@ -1,0 +1,24 @@
+
+<div class="col-lg-12">
+    <div class="panel panel-primary">
+    <div class="panel-heading">Consulta</div>
+        <div class="panel-body">
+            <div class="col-lg-offset-3 col-lg-5">
+                <label>Folio documento:</label>
+                <input class="form-control" name="factura" type="text" value="">
+                <label>Tipo de documento:</label>
+                <select name="tipo" class="form-control">
+                    <option value="c">Cotización</option>
+                    <option value="r">Remisión (folio de OV)</option>
+                    <option value="f">Factura</option>
+                </select>
+                <br>
+                <div class="btn btn-success" onclick="consulta();"><i class="fa fa-send"></i> Consultar</div>
+                <br><br>
+                <div id="resultado" class=""></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="<?= JAVASCRIPT_PATH ?>/views/factura.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>

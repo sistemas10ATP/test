@@ -1,0 +1,154 @@
+<style>
+    select{
+        display: block !important;
+    }
+    p {
+        margin: 0 0 0px;
+    }
+</style>
+<link href="<?= STYLESHEET_PATH ?>/views/merma-gallery.css" rel="stylesheet" type="text/css"></link>
+  <div class="row">     
+      <div class="tab-content">
+          
+        <div id="merma" class="tab-pane fade in active">
+            <br>
+            <div class="col-md-12">                
+                <div class="col-md-2">
+                    <label>Familia:</label>
+                   <select name="familia" class="form-control selectpicker" multiple data-actions-box="true">
+                        <!--<option>Seleccione...</option>-->
+                        <?php foreach ($this->listaFamilia as $k => $v) {
+                            echo '<option value="'.$v['FAMILIA'].'">'.$v['FAMILIA']."</option>";
+                        } ?>
+                        
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label>Almacen:</label>
+                    <select id="almacen" class="form-control selectpicker" multiple data-actions-box="true" >
+                        <?php foreach ($this->listaMerma as $k => $v) {
+                            echo '<option value="'.$v['INVENTLOCATIONID'].'">'.$v['NAME']."</option>";
+                        } ?>
+                        
+                    </select>
+                </div> 
+                <div class="col-md-2">
+                    
+                    <label>Merma sin configurar:</label>
+                    <br/>
+                    <input id="sinconf" name="sinconf" type="checkbox" style="height: 25px; width: 25px;">
+                    
+                </div> 
+                <div class="col-md-2">
+                    <button style="margin-top:  23px;" class="btn btn-primary" onclick="filtrar()"><i class="fa fa-list"></i> Filtrar</button>
+                </div> 
+                <div class="col-md-2">
+                    <label>Utilidad:</label>
+                    <select name="utilidad" class="form-control">
+                        <option value="">Seleccione...</option>
+                        <option value="0.05"> 5 %</option>
+                        <option value="0.02"> 2 %</option>
+                        <option value="0.0"> 0 %</option>
+                        <option value="-0.05">-5 %</option>
+                        <option value="-0.10">-10 %</option>
+                        <option value="-0.15">-15 %</option>
+                        <option value="-0.20">-20 %</option>
+                        <option value="-0.30">-30 %</option>
+                        <option value="-0.40">-40 %</option>
+                        <option value="-0.50">-50 %</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button style="margin-top:  23px;" class="btn btn-success" onclick="actualizar()"><i class="fa fa-save"></i> Actualizar Utilidad</button>
+                </div>
+                <div class="col-md-2">
+                    <span id="loading"></span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <br>
+                <div class="panel panel-info">
+                    <div class="panel-heading">Listado de artículos por almacen y familia</div>
+                    <div class="panel-body">
+                        <table id="tableFilter" class="table table-striped table-bordered" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 135px;">Código de Artículo</th>
+                                    <th style="width: 25%">Nombre de producto</th>
+                                    <th>Existencia</th>
+                                    <th>Almacen</th>
+                                    <th>Localidad</th>
+                                    <th>Costo Promedio</th>
+                                    <th>Precio venta</th>
+                                    <th>Utilidad</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>  
+                    </div>
+                </div>               
+            </div>            
+        </div>
+     </div>
+</div>
+
+<div class="modal fade" role="dialog"  id="contenedorUploadPicture">
+    <div class="modal-dialog" style="width: 50%;">
+        <div class="col-md-12">
+            <div class="panel panel-default" id="" style="box-shadow: 0px 0px 500px #000;">
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <h1 id="titleItem"></h3>
+                            <h4 id="descriptionItem"></h4>
+                    </div>
+                    <div class="col-md-12" id="containerImages" style="">
+                        <div class="col-md-3">
+                            <form action="merma/post-picture" class="dropzone">
+                                <input type="hidden" name="itemid" id="inputItemId"/>
+                                <input type="hidden" name="almacen" id="inputAlmacen"/>
+                                <input type="hidden" name="local" id="inputLocal"/>
+                            </form>
+                            <div id="containerButtonZip"></div>
+                        </div>
+                        <div class="col-md-9 container gal-container" id="gallery">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-comment-o" aria-hidden="true"></i> Comentario</h4>
+      </div>
+        <div class="panel-body">
+            <textarea id="textarea-comment" style="width: 100%;height: 300px;"></textarea>
+        </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" id="modal-btn-guardar"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalgallery">
+    
+</div>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
+ <script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+                <link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+    <script src="<?= JAVASCRIPT_PATH ?>/views/merma.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>
+    

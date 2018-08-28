@@ -1,0 +1,113 @@
+<style>
+    label{
+        display: inline;
+    }
+</style>
+<div class="col-lg-12">
+    <div class="panel panel-yellow">
+    <div class="panel-heading">Consulta de errores de facturación a detalle </div>
+        <div class="panel-body">
+               <div class="col-lg-12">
+                   <form style="margin-bottom: 3.5em;">
+                       <div class="col-lg-2">
+                            <label>Folio documento:</label>
+                            <input class="form-control" name="factura" type="text" value="">
+                        </div>
+                        <div class="col-lg-2">
+                            <label>Tipo de documento:</label><br>
+                            <label class="radio-inline">
+                                <input type="radio" name="tipo" value="ov" checked="">Orden De Venta
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="tipo" value="f">Factura
+                            </label>                    
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="btn btn-default" onclick="consulta()"><i class="fa fa-search" style="color: #00acc1;"> </i> Buscar</div>
+                            <div class="btn btn-default" onclick="reset()"><i class="fa fa-remove" style="color: red;"></i> Limpiar campos</div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div id="resultado"></div>
+                        </div>
+                   </form>
+                   <br>
+                   <div class="col-lg-12">
+                       <div class="col-lg-2"><label>Factura:</label><input id="factura" readonly="" class="form-control"></div>
+                       <div class="col-lg-2"><label>OV:</label><input id="ov" readonly="" class="form-control"></div>
+                       <div class="col-lg-2"><label>Fecha:</label><input id="fecha" type="date" readonly="" pattern="^\d+(?:\.\d{1,3})?$" class="form-control"></div>
+                       <div class="col-lg-2"><label>Sucursal:</label><input id="sucursal" readonly="" class="form-control"></div>
+                       <div class="col-lg-2"><label>Cliente:</label><input id="cliente" readonly="" class="form-control"></div>
+                       <div class="col-lg-2"><label>RFC:</label><input id="rfc" readonly="" class="form-control"></div>
+                       <div class="col-lg-2"><label>Moneda:</label><input id="moneda" readonly="" class="form-control"></div>
+                       <div class="col-lg-2"><label>Monto:</label><input id="monto" type="number" readonly="" class="form-control"></div>
+                       <div class="col-lg-2"><label>Creado por:</label><input id="usuario" readonly="" class="form-control"></div>
+                   </div>
+                   <div class="col-lg-12">
+                       <label>Resultado:</label>
+                       <textarea readonly="" id="pant" class="form-control" style="min-height:15em; font-weight: bold;"></textarea>
+                   </div>                  
+                </div>
+        </div>
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="panel panel-primary">
+    <div class="panel-heading">Lista de facturación por fecha </div>
+        <div class="panel-body">
+            <div class="col-lg-12">
+                <table class="table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <td style="min-width: 15em;max-width: 17em;text-align:left;">
+                                <label>Fecha: </label>
+                                <input  name="fechaFiltro1" value="" type="date" class="form-control" style="max-width: 13em; display: table-cell;" onchange="filtroTabla();">
+                                <i class="fa fa-arrow-right"></i>
+                                <input name="fechaFiltro2" value="" type="date" style="max-width: 13em;display: table-cell;" class="form-control inline" onchange="filtroTabla()">
+                                <button type="button" class="btn btn-default" onclick="filtroTabla()"><i class="fa fa-list" style="color: #00acc1;" ></i> Filtrar</button>
+                                <a href="errorFactura/filtroFechaExcel"><div class="btn btn-default"><i class="fa fa-file-excel-o" style="color: #00acc1;" ></i> CSV</div></a>
+                                <label class="radio-inline">
+                                    <input type="checkbox" name="error" value="true" checked="">   Solo errores
+                                </label>
+                            </td>
+                            <td style="text-align: right;"><div id="msj"></div></td>
+                        </tr>
+                    </thead>
+                </table>
+                <table id="tabla" class="table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th><label>Factura</label></th>
+                            <th><label>OV</label></th>
+                            <th><label>Fecha</label></th>
+                            <th><label>Sucursal</label></th>
+                            <th><label>Cliente</label></th>
+                            <th><label>RFC</label></th>
+                            <th><label>Moneda</label></th>
+                            <th><label>Monto</label></th>
+                            <th><label>Usuario</label></th>
+                            <th><label>UUID</label></th>
+                            <th><label>Detalle del error</label></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>               
+                </div>
+        </div>
+    </div>
+</div>
+
+<script src="<?= JAVASCRIPT_PATH ?>/views/errorFactura.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>

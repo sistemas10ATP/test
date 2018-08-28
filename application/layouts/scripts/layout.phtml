@@ -1,0 +1,445 @@
+<?php /* echo $this->doctype(); */ $meses = array('January'    => 'Enero','February'  => 'Febrero','March'     => 'Marzo','April'     => 'Abril','May'       => 'Mayo','June'      => 'Junio','July'      => 'Julio','August'    => 'Agosto','September' => 'Septiembre','October'   => 'Octubre','November'  => 'Noviembre','December'  => 'Diciembre',); date_default_timezone_set('America/Chihuahua'); $fecha = new DateTime(); $mes   = $fecha->format('F'); $fecha = $meses[$mes].'/'.$fecha->format('Y'); $fecha = new DateTime(); $mes   = $fecha->format('F'); $fecha = $meses[$mes].'/'.$fecha->format('Y');
+if ( isset($_SESSION['userInax']) ){$user = $_SESSION['userInax'];$visible = 'none'; if ($user === 'sistemas03' || $user === 'oscar.loya' || $user === 'jcnoble' || $user === 'sistemas12' || $user === 'sistemas06' || $user === 'ventascat21' || $user === 'encargado.telemarket' || $user === 'idaly.rodriguez' || $user === 'sistemas10' || $user === 'monitoreo2.cat'  || $user === 'sistemas' || $user == 'supervisor.cat' || $user == 'supervisor.tmk'){ $visible = 'block';} } ?>
+<!DOCTYPE html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta charset="UTF-8" />
+        <meta http-equiv="Pragma" content="no-cache" />
+	<title><?= VERSION ?> - 
+            <?php 
+                if(COMPANY=="ATP"){ ?>
+                    Avance y Tecnología en Plásticos
+                <?php                                     
+                }
+                else{
+                ?>
+                    Lideart Innovación s de r.l de c.v 
+                <?php
+                }
+                ?>
+        </title>
+	<?php echo $this->headlink(); echo $this->headScript();  if($this->map!=''){ $mapa=$this->map; } else{ $mapa="Datos Cliente"; } ?>
+        <link rel="stylesheet" href="../application/assets/css/loading.css">
+	<link rel="stylesheet" href="../application/assets/css/menu-superior.css">
+	<link href="../application/assets/css/font-google.css" rel="stylesheet">
+        <style> a:hover { cursor: pointer; } 
+        #imgTiket canvas{
+                width: 300px !important;
+            }
+            .expandirMenu {
+		width: 240px;
+		-webkit-transition: all 1s ease;
+		-moz-transition: all 1s ease;
+		-ms-transition: all 1s ease;
+		-o-transition: all 1s ease;
+		transition: all 1s ease;
+	}
+
+	.compactarMenu {
+		width: 58px;
+		-webkit-transition: all 1s ease;
+		-moz-transition: all 1s ease;
+		-ms-transition: all 1s ease;
+		-o-transition: all 1s ease;
+		transition: all 1s ease;
+	}
+
+	#logoIcon {
+		width: 20px;
+	}
+
+	.compactarHMF {
+		padding-left: 55px;
+	} 
+        </style>
+</head>
+<body onLoad="setInterval('verifica()',15000);">
+    <script>flagFactura=<?php (!empty($_SESSION['factura'])) ? print_r(json_encode($_SESSION['factura'])) : print_r(json_encode(array())); ?>;</script>
+	<header class="compactarHMF">
+		<!-- <nav> -->
+			<!-- Menú Superior -->
+                        <?php if(CONFIG=='AOS06'){?>
+			<div class="card-panel red darken-4" id="mensajesDev" style="margin: 0; padding: 5px;">
+				<span class="white-text text-darken-2"><?= MESSAGE ?></span>
+			</div>
+                        <?php } 
+                        else{
+                        ?>
+                        <!-- Global site tag (gtag.js) - Google Analytics -->
+                        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112524741-1"></script>
+                        <script>                            
+                          window.dataLayer = window.dataLayer || [];
+                          function gtag(){dataLayer.push(arguments);}
+                          gtag('js', new Date());
+                          gtag('config', 'UA-112524741-1');                          
+                        </script>
+                        <?php
+                        }
+                        ?>
+			<div data-color="" class="row white-text" id="menuSuperior">
+				<div class="col s12 m8 l8 left">
+					<div style="height: 30px;" class="left">
+						<i class="material-icons hide" id="menuCompacto" style="cursor: pointer;">keyboard_arrow_left</i>
+						<i class="material-icons" id="menuCompacto2" style="cursor: pointer;">keyboard_arrow_right</i>
+					</div>
+				</div>
+				<div class="col s12 m12 l3" id="divInicioSesion" style="text-align: unset;">
+					<div class="txtMenu">Tipo de cambio: <span id="tipoCambio"></span></div>
+				</div>
+				<div class="col s12 m12 l1" style="text-align: right; margin-top: 10px;">
+                                    <div class="dropdown-button txtMenu" data-activates='dropdown1'><?=  $_SESSION['userInax'] ?></div>
+                                    <ul id='dropdown1' class='dropdown-content' style="margin-top: 27px; width:200px;">
+                                            <li style="min-height: 1em;"><a style="line-height: inherit;font-size: 0.85em;text-align: right;" href="#" onclick="javascript:$('#modal-about').openModal();">Versión</a></li>
+                                            <li class="divider"></li>
+                                    <li style="min-height: 1em;"><a style="line-height: inherit;font-size: 0.85em;text-align: right;" href="#" onclick="javascript:$('#modal-shortcuts').openModal();">Shortcuts</a></li>
+                                    <li class="divider"></li>
+                                    <li style="min-height: 1em;"><a style="line-height: inherit;font-size: 0.85em;text-align: right;color: #cc0000; font-weight: bold;" href="../public/login">Cerrar Sesión</a></li>
+                                    </ul>
+				</div>
+			</div> 
+			<!-- Menú Superior -->
+		<!-- </nav>. -->
+		<ul id="nav-mobile" class="side-nav fixed compactarMenu" style="transform: translateX(0px);">
+			<li class="logo " style="background-color: #01579a; margin-top: 0;  margin-bottom: 0; padding-top: 13px;">
+				<a id="logo-container" href="" class="brand-logo hide">
+                                    <?php 
+                                    if(COMPANY=="ATP"){ ?><img src="<?= IMAGES_PATH ?>/avance-logo.png"  class="responsive-img"><?php }
+                                    else{ ?> <img src="<?= IMAGES_PATH ?>/lideart270x78.png"  class="responsive-img"> <?php } ?>
+				</a>
+                            <?php 
+                                    if(COMPANY=="ATP"){ ?>
+					<img src="<?= IMAGES_PATH?>/avance-icon.png" alt="" id="logoIcon" class="">
+                                    <?php                                     
+                                    }
+                                    else{
+                                    ?>
+                                        <img src="<?= IMAGES_PATH?>/lideart80x78.png" alt="" id="logoIcon" class="">
+                                    <?php
+                                    }
+                                    ?>				
+                                        <h3 style="font-family: 'Jura', sans-serif; margin-bottom: 0px;" class="hide">
+					<a onclick="$('#modal-about').openModal();" style="color: White; font-size: 18px;"><i class="material-icons">widgets</i> <?= VERSION ?></a>
+				</h3>
+			</li>
+                        <li style="border-bottom: 1px solid #DDD; margin-top: 0;" >
+				<a class="waves-effect waves-teal" href="./?" style="padding: 0 0px; "><i class="fa fa-2x fa-home"></i> Inicio</a>
+			</li>
+                        <li style="border-bottom: 1px solid #DDD" class="tooltipped" data-position="right" data-delay="50" data-tooltip="ALT + T">
+                            <a class="waves-effect waves-teal" href="./?" target="_blank" style="padding: 0 0px; "><i class="fa fa-2x fa-chrome"></i>  Nueva Pestaña</a>
+			</li>
+                        <script>
+                            if(havePermision(6)){
+                                showOption('<li id="ov-menu" style="border-bottom: 1px solid #DDD" class="tooltipped" data-position="right" data-delay="50" data-tooltip="ALT + V">'+
+				'<a class="waves-effect waves-teal" onclick="$(\'#btn-venta\').click();" style="padding: 0 0px; "><i class="fa fa-2x fa-shopping-bag"></i> Nueva Orden de Venta</a>'+
+				'<form action="inicio?OV" method="post" id="generarOV"><input type="hidden" name="documentType" value="ORDVTA"><button type="submit" name="submit" class="hide" id="btn-venta"></button></form></li>');
+                            }
+                            if(havePermision(5)){
+                                showOption('<li style="border-bottom: 1px solid #DDD;" class="tooltipped" data-position="right" data-delay="50" data-tooltip="ALT + G"><a class="waves-effect waves-teal" href="reporte" id="graficas"  style="padding: 0 0px; "><i class="fa fa-2x fa-line-chart"></i>  Reporte</a></li>');
+                            }
+                            if(havePermision(8)){
+                                showOption('<li style="border-bottom: 1px solid #DDD;"><a class="waves-effect waves-teal" href="errorFactura" style="padding: 0 0px; "><i class="fa fa-2x fa-money" style="color:green;"></i>  Resultado de Facturas</a></li>');
+                            }
+                            if(havePermision(4)){
+                                showOption('<li style="border-bottom: 1px solid #DDD;"><a class="waves-effect waves-teal" href="merma" style="padding: 0 0px; "><i class="fa fa-2x fa-medium" style="color:green;"></i>  Configuracion de merma</a></li>');
+                            }
+                            if(havePermision(7)){
+                                showOption('<li style="border-bottom: 1px solid #DDD;"><a class="waves-effect waves-teal" href="comisiones" style="padding: 0 0px; "><i class="fa fa-2x fa-dollar"></i> Comisionistas</a></li>');
+                            }
+                            if(havePermision(12)){
+                                showOption('<li style="border-bottom: 1px solid #DDD;"><a class="waves-effect waves-teal" href="diarios" style="padding: 0 0px; "><i class="fa fa-2x fa-dollar" style="color:green;" ></i> Diarios de pago</a></li>');
+                            }
+                        </script>
+			<li id="cot-menu" style="border-bottom: 1px solid #DDD" class="tooltipped" data-position="right" data-delay="50" data-tooltip="ALT + C">
+				<a class="waves-effect waves-teal" onclick="$('#btn-cotiza').click();" style="padding: 0 0px; "><i class="fa fa-2x fa-shopping-cart"></i> Nueva Cotización</a>
+				<form action="inicio?COT" method="post" id="generarCOT">
+					<input type="hidden" name="documentType" value="CTZN">
+					<button type="submit" name="submit" class="hide" id="btn-cotiza"></button>
+				</form>
+			</li>
+			<li id="cliente-menu" style="border-bottom: 1px solid #DDD" class="tooltipped" data-position="right" data-delay="50" data-tooltip="ALT + N">
+				<form action="customer" method="post">
+					<input type="hidden" name="documentType" value="<?php echo $this->documentType; ?>">
+					<button type="submit" class="hide" name="submit" id="newCustomer"></button>
+				</form>
+				<a class="waves-effect waves-teal" onclick="$('#newCustomer').click();" style="padding: 0 0px; "><i class="fa fa-2x fa-group"></i> Nuevo Cliente</a>
+			</li>                        
+                        <li style="border-bottom: 1px solid #DDD; margin-top: 0;" >
+                            <a class="waves-effect waves-teal" href="./consultaguia" style="padding: 0 0px; "><i class="fa fa-2x fa-truck" style="color: orangered;"></i> Paqueterias</a>
+			</li>
+                        <li style="border-bottom: 1px solid #DDD;"><a class="waves-effect waves-teal" onclick="ticket();" style="padding: 0 0px; "><i class="fa fa-2x fa-ticket"></i>  Ticket</a></li>
+                        <li style="border-bottom: 1px solid #DDD;">
+				<a class="waves-effect waves-teal" href="factura" style="padding: 0 0px; "><i class="fa fa-2x fa-file-pdf-o" style="color:#840101;"></i>  Facturas</a>
+			</li>
+                        <li style="border-bottom: 1px solid #DDD;">
+                            <a class="waves-effect waves-teal"  style="padding: 0 0px; " href="../public/login"> <i class="fa fa-2x fa-sign-out" style="color:#ff0000"></i> Cerrar Sesión</a>
+			</li>
+		</ul>
+	</header>
+	<main class="compactarHMF">
+		<!-- Inicia: Main -->
+        <!-- modal de semaforo -->
+        <div id="semaforoModal" class="modal">
+            <div class="modal-content">
+              <h4>Atención</h4>
+              <p>El semaforo ha cambiado de estatus, favor de verificar su color</p>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-action modal-close waves-effect waves-green btn red darken-4 ">Aceptar</a>
+            </div>
+        </div>
+        <div id="sesion" class="modal">
+            <div class="modal-content">
+              <h4>Atención</h4>
+              <p>La sesion ha caducado favor de abrir una pestaña nueva e iniciar sesion para no perder el contenido actual</p>
+              <div id="content"></div>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-action modal-close waves-effect waves-green btn red darken-4 ">Aceptar</a>
+            </div>
+        </div>
+        <div id="errorLogModal" class="modal">
+            <div class="modal-content">
+              <h4>Atención</h4>
+              <p id="errorContent" ></p>
+            </div>
+            <div class="modal-footer">
+              <a href="#!" class="modal-action modal-close waves-effect waves-green btn red darken-4 ">Aceptar</a>
+            </div>
+        </div>
+        <!-- fin de modal de semaforo -->
+	<!-- Inicia: Modal (About) -->
+	<div class="modal" id="modal-about">
+		<div class="modal-content">
+			<div class="modal-dialog">
+				<div class="modal-header light-blue darken-4" style="text-align: center; color: #FFFFFF">
+					<h3>inAX Ventas.</h3>
+				</div>
+				<div class="modal-body">
+					<p>Se autoriza el uso de este software a:</p>
+					<p><h5>Avance y Tecnología en Plásticos S.A. de C.V.</h5></p>
+					<p>En esta version se incluye:</p>
+					<p>* Aplicacion de algunos atajos con el teclado los podras ver colocando el mouse en el menú</p>
+					<p>* Proximanete algunas graficas de ventas con estadisticas de uso de InAX</p>
+                                        <p>* Incorporacion de menú para acceo mas rapido a las opciones del sistema</p>
+					<p style="text-align: right"><?= VERSION ?></p>
+				</div>
+				<div class="modal-footer">
+					<button class="modal-action modal-close waves-effect waves-green btn-flat light-blue darken-4 white-text" >X&nbsp;Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+        <div class="modal" id="modal-ticket">
+		<div class="modal-content">
+			<div class="modal-dialog">
+				<div class="modal-header light-blue darken-4" style="text-align: center; color: #FFFFFF">
+					<h3>Tickets</h3>
+				</div>
+				<div class="modal-body">
+                                    <form id="formSendTicket" action="../public/inicio/ticket" method="POST">				
+						<div class="row">							
+							<div class="col l2">
+                                                            <b>Categoria :</b><br/> inAX
+                                                            <hr/>
+                                                            <b>Subcatgoria :</b><br/> Incidencia INAX
+							</div>
+							<div class="col l3">
+								<label>Elemento</label>
+                                                                <select name="elemento" style="display:block;">
+									<option value="Otro" selected>Otro</option>
+									<option value="Confirmacion de Cotizacion">Confirmacion de cotizacion</option>
+									<option value="Precios">Precios</option>
+								</select>
+							</div>
+                                                        <div class="col l3">
+								<label>Mandar captura de pantalla</label>
+                                                                <select name="select_send_atachment" style="display:block;">
+									<option value="1"  selected>Si</option>
+									<option value="0">No</option>
+								</select>
+							</div>
+                                                    
+                                                        <div class="input-field col m3 center">
+    								<div id="imgTiket" style="width: 100px;"></div>
+  							</div>
+						</div>                                        
+                                        <div class="row">
+                                            <div class="input-field col s12">
+                                                <div >Detalle el problema</div>
+                                                <textarea name="textTicket"   style="float: right;height: 150px;" class=""></textarea>
+                                                <input name="base64" type="hidden" id="base64">
+                                            </div>
+                                        </div>
+                                    </form>                                    
+				</div>
+                            
+				<div class="modal-footer">
+					<button class="modal-action modal-close waves-effect waves-green btn-flat light-blue darken-4 white-text" onclick="mandarTicket();">Enviar Ticket</button>
+				</div>
+			</div>
+		</div>
+	</div>
+        
+	<!-- Termina: Modal (About) -->
+		<!-- Inicia: Modal (About) -->
+	<div class="modal" id="modal-shortcuts">
+		<div class="modal-content">
+			<div class="modal-dialog">
+				<div class="modal-header light-blue darken-4" style="text-align: center; color: #FFFFFF">
+					<h4>Combinaciones de teclas de Inax</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col s12 m12 l12 black-text " id="BusExi">
+							<div  id="opcionesTeclas" class="hide-on-small-only hide-on-med-only">
+								<sup>F2 = Búsqueda por existencias</sup>
+								<sup onclick="javascript:$.event.trigger({type : 'keydown',which: 115});">F4 = Búsqueda por familias</sup>
+								<sup onclick="javascript:$.event.trigger({type : 'keydown',which: 117});">F6 = Ultimas Ventas</sup>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button class="modal-action modal-close waves-effect waves-green btn-flat light-blue darken-4 white-text">X&nbsp;Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Termina: Modal (About) -->
+	<!-- Contenedor -->
+	<div class="row light-red darken-4">
+		<div class="col s12 m12 l12">
+			<center id="barraProgreso" class="hide-on-med-and-down">
+				<ol id="rutaReal" class="breadcrumb breadcrumb-arrow">
+					<li class="success"><a class="link" href="./?">Inicio</a></li>
+                                        <script> docType = '<?php $tpo2= filter_input(INPUT_POST,'documentType');if($tpo2==''){ $tpo2='CTZN';} echo $tpo2; ?>'; var mapa=""; tipo=""; switch (docType) { case 'CTZN': tipo="Cotización"; break; case 'ORDVTA': tipo="Orden de Venta"; break; default: tipo="Cotización u Orden de Venta"; }</script>
+					<li class="default" id="mapaCliente"><a><script>document.write(tipo);</script></a></li>
+					<li class="default" id="mapaCliente2"><a><?php echo $mapa; ?></a></li>
+					<li class="default" id="articulos2"><a>Seleccionar Articulos</a></li>
+					<li class="default" id="confirmarDocumento2"><a>Confirmar</a></li>
+					<li class="default" id="editar2"><a>Editar</a></li>
+					<li class="default" id="imprimirDocumento2"><span>Imprimir <script>document.write(tipo);</script></span></li>
+				</ol>
+			</center>
+			<?php if ( isset($_SESSION['userInax']) ){
+                                $user = $_SESSION['userInax']; 
+                                $visible = 'none'; 
+                                if ($user === 'sistemas07' || $user === 'ventascat21'|| $user === 'sistemas10' || $user == 'supervisor.cat'){ 
+                                    $visible = 'block';
+                                } 
+                            }
+                            
+                            echo $this->layout()->content; print_r($this->style_array); ?>
+		</div>
+	</div>
+		<!-- Termina: Main -->
+	</main>        
+        <input type="hidden" id="DocumentType2" value="<?php echo $tpo2;?>">
+	<script> 
+            userName='<?php echo $_SESSION['nomuser'];?>';
+            usuario='<?php echo $_SESSION['userInax']; ?>';
+            mostrador='<?php echo $_SESSION['cuentaMostrador']; ?>';
+            diarioCuentasPago = <?php echo json_encode($_SESSION['diarioCuentasPago']); ?>;
+            $('#tipoCambio').html('<?php echo $_SESSION['tipoC']; ?>'); 
+            $(document).hotkey('alt+v', function(e){ 
+                $('#btn-venta').click(); }); 
+            $(document).hotkey('alt+c', function(e){ 
+                $('#btn-cotiza').click(); }); 
+            $(document).hotkey('alt+q', function(e){ 
+                $('#generarOV').submit(); });     
+            $(document).hotkey('alt+g', function(e){ 
+                $("#graficas").get(0).click(); }); 
+            $(document).hotkey('alt+t', function(e){ 
+                abrirEnPestana(""); }); 
+            $(document).hotkey('alt+n', function(e){ 
+                $('#newCustomer').click(); }); 
+            function bread3() { 
+                var docId = $("#DocumentId").val(); 
+                var clte = $("#claveclte").val(); 
+                var docType = $("#DocumentType2").val(); 
+                $('#editarCotForm #documentType').val(docType); 
+                $('#editarCotForm #DocumentId').val(docId); 
+                $('#editarCotForm #cliente').val(clte); $('#editarCotForm #editar').val('1'); 
+                $('#editarCotForm').submit(); 
+            }
+            $('#menuCompacto').click(function(){
+		$('#nav-mobile').addClass('compactarMenu');
+		$('.logo h3').hide();
+		$('#logo-container').hide();
+		$('#logoIcon').removeClass('hide');
+		$('#logoIcon').addClass('show');
+		$('header, main, footer').addClass('compactarHMF');
+		$('#menuCompacto').hide();
+		$('#menuCompacto2').removeClass('hide');
+		$('#menuCompacto2').addClass('show');
+            });
+            $('#menuCompacto2').click(function(){
+		$('.logo h3').show();
+		$('#nav-mobile').removeClass('compactarMenu');
+		$('#nav-mobile').addClass('expandirMenu');
+		$('#logo-container').show();
+                $('#logo-container').removeClass('hide');
+                $('.logo h3').removeClass('hide');
+		$('#logoIcon').removeClass('show');
+		$('#logoIcon').addClass('hide');
+		$('header, main, footer').removeClass('compactarHMF');
+		$('#menuCompacto').show();
+                $('#menuCompacto').removeClass('hide');
+		$('#menuCompacto2').addClass('hide');
+		$('#menuCompacto2').removeClass('show');
+            });
+            company='<?= $_SESSION['company_name']; ?>';
+            userMail='<?= $_SESSION['email']; ?>';
+</script>
+        <?php if(SUCURSAL==0 or SUCURSAL==1 or SUCURSAL==2){ ?>
+        <script>
+            function verifica(){
+            $.ajax({ url : "reporte/semaforosts",dataType: 'json',
+                success : function(res){
+                    var s=$('#menuSuperior').attr('data-color');
+                    localStorage.setItem('bandera',res.sesion);
+                    if(!res.sesion){
+                        if( !$('#sesion').is(":visible") ){
+                            $('#sesion').openModal({dismissible: false});
+                        }
+                        localStorage.setItem('bandera','no');
+                    }
+                    else{
+                        if(s!=''){
+                            if(res.color!=s){
+                                Materialize.toast("El semaforo ha cambiado",3000);
+                                $('#semaforoModal').openModal({dismissible: false});
+                            }
+                        }   
+                        $('#menuSuperior').css('background-color','#'+res.color);
+                        $('#menuSuperior').attr('data-color',res.color);
+                        $('#semaforosts2').css('color','#'+res.color);
+                        $('#sem').css('background','#0f579b');
+                        localStorage.setItem('bandera','si');
+                    }
+                    return localStorage.getItem('bandera');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                     localStorage.setItem('bandera','no');
+                     return localStorage.getItem('bandera');      
+                }
+            });
+        }
+            verifica();
+        </script>
+        <?php
+        }
+        else{
+            ?>
+        <script>
+            function verifica(){ 
+                localStorage.setItem('bandera','si');
+                $('#menuSuperior').removeClass('white-text'); 
+            }
+            verifica();
+        </script>
+        <?php
+        }
+        ?>
+</body>
+</html>

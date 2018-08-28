@@ -1,0 +1,81 @@
+<div class="panel panel-default">
+    <div class="panel-heading">Configuracion de roles</div>
+    <div class="panel-body">
+
+    </div>
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a data-toggle="tab" href="#usuariosContenedor">Usuarios</a>
+          
+        </li>
+        <li>
+            <a data-toggle="tab" href="#rolesContenedor">Roles</a>
+           
+        </li>
+    </ul>
+    <hr/>
+    <div class="tab-content">
+        <div id="usuariosContenedor"class="tab-pane fade in active">
+            <nav class="navbar ">
+                <div class="container-fluid">
+                  <button class="btn btn-danger navbar-btn">Crear Usuario</button>
+                </div>
+              </nav>
+            <table class="table" id="table-user">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>holi</td>
+                        <td>holi</td>
+                        <td>holi</td>
+                    </tr>
+                    <tr>
+                        <td>holi</td>
+                        <td>holi</td>
+                        <td>holi</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="rolesContenedor" class="tab-pane fade">
+           <nav class="navbar ">
+                <div class="container-fluid">
+                  <button class="btn btn-danger navbar-btn">Crear Rol</button>
+                </div>
+              </nav>
+            <table class="table" id="table-role">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>holi</td>
+                        <td>holi</td>
+                        <td>holi</td>
+                    </tr>
+                    <tr>
+                        <td>holi</td>
+                        <td>holi</td>
+                        <td>holi</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $("#table-user").dataTable();
+     $("#table-role").dataTable();
+</script>

@@ -1,0 +1,276 @@
+#logo {
+	height: 22px;
+	margin-top: 0px;
+}
+
+#menuSuperior {
+	/*max-height: 40px;*/
+	margin-bottom: 0px; 
+	/*padding-top: 8px;*/
+}
+
+#menuSuperior p,  #menuSuperior a {
+	font-size: 14px;
+	margin-top: 0px;
+}
+
+#menuSuperior .chip {
+	margin-top: -10px;
+}
+
+#menuSuperior #navegacion p {
+	display: inline-block;
+	margin-left: 0px;
+}
+
+#menuSuperior #navegacion p.selected {
+	font-weight: bold;
+}
+
+
+
+
+#BusExi {
+    margin-top: -10px;
+    text-align: center;
+
+}
+
+
+#BusExi sup {
+	display: inline-block;
+	margin-left: 7px;
+	margin-top: 26px;
+}
+
+i {
+  display: inline-flex;
+    vertical-align: middle;
+ }
+
+
+/* Breadcrumb */
+
+
+
+
+.breadcrumb-arrow {
+	margin-top: 7px;
+	height: 36px;
+    	padding: 0;
+    	line-height: 36px;
+    	list-style: none;
+}
+.breadcrumb-arrow li:first-child a {
+	border-radius: 4px 0 0 4px;
+	-webkit-border-radius: 4px 0 0 4px;
+	-moz-border-radius: 4px 0 0 4px
+}
+.breadcrumb-arrow li, .breadcrumb-arrow li a, .breadcrumb-arrow li span {
+	display: inline-block;
+ 	 vertical-align: top;
+}
+.breadcrumb-arrow li:not(:first-child) {
+	margin-left: -5px
+}
+
+.breadcrumb-arrow li a, .breadcrumb-arrow li:not(:first-child) span {
+	height: 36px;
+	padding: 0 10px 0 25px;
+    	line-height: 36px
+}
+
+.breadcrumb-arrow li a {
+  	position: relative;
+    	color: #fff;
+	text-decoration: none;
+	background-color: #2196F3; /* Azul L*/
+	border: 1px solid #2196F3; /* Azul L*/
+}
+
+.breadcrumb-arrow li a:after, .breadcrumb-arrow li a:before {
+	position: absolute;
+    	top: -1px;
+    	width: 0;
+    	height: 0;
+    	content: '';
+    	border-top: 18px solid transparent;
+    	border-bottom: 18px solid transparent
+}
+.breadcrumb-arrow li a:before {
+	right: -10px;
+	z-index: 3;
+	border-left-color: #2196F3; /* Azul L*/
+	border-left-style: solid;
+	border-left-width: 11px
+}
+.breadcrumb-arrow li a:after {
+	right: -11px;
+	z-index: 2;
+    	border-left: 11px solid #2494be
+}
+
+.breadcrumb-arrow li a:focus, .breadcrumb-arrow li a:hover {
+
+}
+.breadcrumb-arrow li a:focus:before, .breadcrumb-arrow li a:hover:before {
+
+}
+
+
+.breadcrumb-arrow li a:focus, .breadcrumb-arrow li a.link:hover {
+	text-decoration: underline;
+}
+
+
+
+
+.breadcrumb-arrow li span {
+	color: #2196F3;
+}
+.default {
+        color: #2196F3;
+	font-size: 14px;
+	background-color: #EEE; /*Default */
+	border-radius: 0px 4px 4px 0px;
+	-webkit-border-radius: 0px 4px 4px 0px;
+	-moz-border-radius: 0px 4px 4px 0px;
+}
+
+li.success a {
+	background-color: #0D47A1 !important; /*AZUL M*/
+}
+.breadcrumb-arrow li.success a:before {
+	right: -10px;
+	z-index: 3;
+	border-left-color: #0D47A1; /*AZUL M*/
+	border-left-style: solid;
+	border-left-width: 11px
+}
+
+
+
+
+li.default span {
+	background-color: #9E9E9E;
+	border-radius: 0 4px 4px 0px;
+	color: White;
+}
+
+#mapaCliente, #rutaReal {
+	font-size: 14px;
+}
+
+
+li.final span {
+	background-color: #0D47A1;
+	border-radius: 0 4px 4px 0px;
+	color: White;
+}
+
+li.link {
+	text-decoration: underline;
+}
+
+
+
+
+
+
+
+/* Menú Superior */
+#opcionesTeclas {
+	border: 0px solid;
+	line-height: 0px;
+	margin-top: 0px;
+	padding: 0px;
+}
+
+#divInicioSesion {
+	text-align: right;
+	margin-top: 10px;
+}
+
+/* Menú Superior */
+
+
+
+
+
+
+/* Menú Lateral */
+
+#slide-out li:first-child {
+	background-color: #01579b;
+}
+
+#menuLateral {
+	background-color: White;
+
+	bottom: 0px;    
+}
+
+
+.side-nav2 {
+	width: 240px;
+    	left: -105%;
+    	top: 0;
+    	margin: 0;
+    	height: 300px;
+    	height: calc(100% + 60px);
+    	height: -moz-calc(100%);
+    	padding-bottom: 60px;
+    	background-color: #FFF;
+    	z-index: 999;
+    	overflow-y: auto;
+    	will-change: left;
+}
+
+
+.side-nav2 li {
+    float: none;
+    padding: 0 15px;
+}
+
+.side-nav2 li {
+    float: none;
+    padding: 0 15px;
+    line-height: 64px;
+}
+
+.side-nav2 a {
+    color: #444;
+    display: block;
+    font-size: 1rem;
+    height: 64px;
+    line-height: 64px;
+    padding: 0 15px;
+}
+.side-nav2 a {
+    color: #444;
+    display: block;
+    font-size: 1rem;
+    height: 64px;
+    line-height: 64px;
+    padding: 0 15px;
+}
+
+
+.inverse {
+	background-color: #01579a;
+}
+.side-nav.fixed.inverse a {
+    color: White;
+}
+
+.inverse2 {
+	background-color: #555;
+}
+.side-nav.fixed.inverse2 a {
+    color: White;
+}
+
+
+#menuSuperior i, #menuSuperior .txtMenu {
+      margin-top: -6px;
+}

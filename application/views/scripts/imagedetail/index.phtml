@@ -1,0 +1,32 @@
+<link href="<?= STYLESHEET_PATH ?>/views/merma-gallery.css" rel="stylesheet" type="text/css"/>
+<style>
+    #page-wrapper{
+        margin: 0 0 0 0 !important;
+    }
+</style>
+<div class="panel panel-primary">
+    <div class="panel-heading"><h4>Galeria de imagenes de articulo <?= $this->item ?> Almacen: <?= filter_input(INPUT_GET,'almacen') ?> Localidad: <?= filter_input(INPUT_GET,'local') ?></h4></div>
+  <div class="panel-body">
+      <div class="col-md-12 container gal-container" >
+      <?php foreach ($this->images as $key => $value) {          
+            echo "<div class='col-md-4 col-sm-6 co-xs-12 gal-item'>"
+                    ."<div class='box'>"
+                    ."<a href='#' data-toggle='modal' data-target='#".$key."'>"
+                    ."<img src='".$value['RUTA']."'/>"
+                    ."</a>"
+                    .'<div class="modal fade" id="'.$key.'" tabindex="-1" role="dialog"><div class="modal-dialog" role="document"><div class="modal-content"> <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button></div>'
+                    . '<div class="modal-body">'
+                    ."<img src='".$value['RUTA']."'/>"
+                    .'<div>'
+                     .'<div class="modal-footer" style="background: #eee;text-align: left;">'
+                    .$value['COMENTARIOS']
+                    .'</div>'
+                    .'</div></div></div></div>'
+                    ."</div></div>";
+           }?>
+      </div>
+  </div>
+</div>
+<script>
+    $("#menu").remove();
+</script>

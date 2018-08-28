@@ -1,0 +1,83 @@
+<script src="<?= JAVASCRIPT_PATH ?>/views/comisiones.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>
+<script src="<?= JAVASCRIPT_PATH ?>/views/consultaguia.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="./?"><i class="fa fa-home"> Home</i></a></li>
+            <li class="breadcrumb-item active"><i class="fa fa-newspaper-o bg-info"></i> Consulta guia</li>
+        </ol>        
+    </div>
+</div>
+<div class="panel panel-primary">
+            <div class="panel-heading">
+                <i class="fa fa-address-card"></i> Consulta de guías
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <form id="inputsFilterTbl">
+                        <div class="col-md-8">
+                                <label>Cliente:</label>
+                                <input type="text" id="comisionistaListFilter" name="cliente" class="form-control" >                            
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-default" type="button" style="margin-top: 24px;" onclick="getList();"><i class="fa fa-list"></i> Consultar</button>
+                        </div>
+                    </form>
+                </div>
+                <br>
+                <label class="text-uppercase text-danger">Ordendes de venta con paqueterias</label>
+                <br><br>
+                <table id="reporte-tbl" class="table table-striped">
+                    <thead>
+                        <tr><th>Orden de Venta</th><th>Nombre</th><th>Modo de entrega</th><th>Secretario de ventas</th><th>Estado</th><th>Fecha</th><th>Guía</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <br><label style="color: red;">**N/D = No Definido   **SIN PROCE= sin procesar</label>
+            </div>
+        </div>
+<!-- modal de comisionista -->
+<div id="comisionistaModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header btn-info">
+                <label>Detalle de Comisionista</label>
+            </div>
+            <div class="modal-body">
+                <label>Teléfono</label>
+                <input class="form-control" id="comisionistaTelefono" readonly="">
+                <label>Dirección</label>
+                <textarea id="comisionistaDireccion" class="form-control" readonly=""></textarea>                                
+            </div>  
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>            
+</div>
+<!-- Modal -->
+<div id="detalleDoc" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Detalle de articulos de <label id="folioOv"></label></h4>
+      </div>
+      <div class="modal-body">
+          <table class="table table-striped" id="detalleOV">
+              <thead><th>#linea</th><th style="width: auto;">Artículo</th><th>Descripción</th><th>Cantidad</th><th>Unidad</th></thead>
+              <tbody></tbody>
+          </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    autocompleteSetValue(mapClient(<?= $this->clienteList ?>),'#comisionistaListFilter');
+    $("#tblComisionistasAsignados").DataTable();
+    $("#reporte-tbl").DataTable();
+</script>

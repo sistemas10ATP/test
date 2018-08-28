@@ -1,0 +1,404 @@
+<script>
+    var payModeList=<?php echo json_encode($this->payMode);?>;
+    var payTerm=<?php echo json_encode($this->payTerm);?>;
+    var cargoOptions = <?php echo json_encode($this->cargos); ?>;
+    var paymode='';
+</script>
+<body class=" blue-grey lighten-5">
+    <style>
+        .mostrar {
+            display: block;
+        }
+
+        .ocultar {
+            display: none;
+        }
+        .bordeTable{
+            border: 1px solid grey;
+            height: 15px;
+        }
+        .datoEtiqueta{
+            border-bottom:none !important;
+            height: 2rem !important;
+            font-size: 12px !important;
+            margin: 0 !important;
+            width: 100% !important;
+        }
+    </style>
+<!-- Modal loading -->
+<div id="modalLoading" class="modal light-blue darken-3" style="width: 25%">
+    <div class="modal-content" style="border: solid 2px #01579b">
+        <div style="text-align: center">
+            <div class="preloader-wrapper big active">
+                <div class="spinner-layer spinner-red-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h5 style="color: white">Sus datos se estan cargando...</h5>
+    </div>
+</div>
+<!--   end modal loading    -->    
+<!--//////////////////////modal archivos adjuntos//////////////////////////-->
+<div id="modalDatosAdjuntos" class="modal">
+    <div class="modal-content">
+        <h4>Archivos Adjuntos</h4>
+        <hr />
+        <div class="row white-text" style="background-color: #006699;">
+            <div class="col l2 s2 m2" style="font-size: 12px;">Fecha y Hora de Creación</div>
+            <div class="col l2 s2 m2" style="font-size: 12px;">Tipo</div>
+            <div class="col l5 s5 m5" style="font-size: 12px;">Descripción</div>
+            <div class="col l3 s3 m3" style="font-size: 12px;">Restricción</div>
+        </div>
+        <div class="row">
+            <form id="formDatosAdj">
+                <div class="col l2 s2 m2">
+                    <input type="text" id="fechaAdj" readonly />
+                </div>
+                <div class="col l2 s2 m2">
+                    <input type="text" id="tipoAdj" readonly />
+                </div>
+                <div class="col l5 s5 m5">
+                            <textarea rows="2" cols="20" type="text" id="descAdj"
+                                    style="height: 100%" readonly></textarea>
+                </div>
+                <div class="col l3 s3 m3">
+                    <input type="text" id="restAdj" readonly />
+                </div>
+                <hr />
+                <textarea rows="10" cols="20" id="notasAdj" style="height: 100%; width: 100%;" readonly></textarea>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+            <button	class="modal-action modal-close waves-effect waves-green btn-flat light-blue darken-4 white-text">Cerrar</button>
+    </div>
+</div>
+<!--//////////////////////end modal archivos adjuntos//////////////////////-->
+<!-- Modal Facturacion -->
+<div id="modalFactura" class="modal lighten-3">
+    <div class="modal-content">
+        <h4>Facturar <span id="ovLbl"></span> - <span id="remLbl"></span></h4>       
+        <div class="row">
+            <div class="col l6">
+                <label>Forma de pago:</label>
+                <select name="entrega" id="entregaF" class="browser-default" onchange="setPayMode(this.value,paymode);"></select>
+            </div>
+            <div class="col l6">
+                <label>Entrega:</label>
+                <input type="text" id="domicilioF" readonly="" style="margin: 0 0 0 0;">
+            </div>
+            <div class="col l6">
+                <label>Tipo cobro:</label>
+                <div id="tipoCobro">
+                    <select id="cargo" class="browser-default"></select>
+                </div>
+            </div>
+            <div class="col l6">
+                <label>Uso de CFDI:</label>
+                <select id="usoCFDI" name="usoCfdi" class="browser-default">
+                    <script>
+                        var usoCFDI=<?php echo json_encode($this->usoCFDI);?>;
+                        $.each(usoCFDI,function (i,v){
+                            document.write('<option value="'+v.CFDIUSECODE+'">'+v.CFDIUSECODE+' - '+v.DESCRIPTION+'</option>');
+                        });
+                    </script>                    
+                </select>
+            </div>
+            <div class="col l12">
+                <label>Dirección de facturación</label>
+                <select id="direccionF" name="direccion" class="browser-default"></select>
+            </div>
+        </div>        
+    </div>
+    <div class="modal-footer" id="footerFactura">
+        <a class="waves-effect waves-green btn-flat white-text red" onclick="facturarClose();">Cerrar</a>
+        <a id="btnFacturar" onclick="facturar()" class="waves-effect light-green darken-4 white-text btn-flat" style="margin-right: 13px;">Facturar</a>
+        <span id="loadFacturaSt" style="float: right; margin-right: 30px;margin-top: 13px;"></span>
+    </div>
+</div>
+<!-- modal diaro de pago -->
+<div class="modal" id="diarioPago">
+    <div class="modal-header">
+        <h4>Diario <span id="process"></span> </h4> 
+    </div>
+    <div class="modal-body" >
+        <form id="diarioPagoForm">
+            <div class="row">
+                <div class="col l4">
+                    <label>Número de diario:</label>
+                    <input name="" id="folioDiario" readonly="">
+                </div>
+                <div class="col l2">
+                    <label>Factura</label>
+                    <input id="diarioFacturaFolio" type="text" name="factura"  readonly="" value="">
+                </div>
+                                        
+                <div class="col l5">
+                    <label>Descripción:</label>
+                    <input name="descripcion" value="<?= $this->fechaActual ?> Cobros <?= $this->sucursalActual[0][0] ?>" readonly="">
+                </div>                
+            </div>
+            <hr>
+            <h4>Lineas</h4>
+            <div class="row">
+                <div class="col l2">
+                    <label>Fecha</label>
+                    <input type="text" name="fecha" value="<?= $this->fechaActual ?>">
+                </div>
+                <div class="col l2">
+                    <label>Crédito</label>
+                    <input id="diarioMontoFactura" type="number" min="0" name="diarioMontoFactura" value="">
+                </div>
+                <div class="col l2">
+                    <label>Nombre:</label>
+                    <select name="contrapartida" id="contraPartida" class="browser-default"><option></option></select>
+                </div>
+                <div class="col l2">
+                    <label>Cuenta de contrapartida</label>
+                    <select id="diarioCuentaContra" name="diarioCuentaContra" class="browser-default"></select>
+                </div>
+                <div class="col l3">
+                    <label>Tipo de Pago:</label>
+                    <select id="diarioFPago" name="diarioFPago" class="browser-default" onchange="diarioFormaPago(this.value)"></select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a class="waves-effect waves-green btn-flat white-text red" onclick="$('#diarioPago').closeModal();">Cerrar</a>
+        <a id="diarioGuardarBtn" onclick="crearDiario()" class="waves-effect light-green darken-4 white-text btn-flat" style="margin-right: 13px;">Guardar</a>
+        <span id="loadFacturaSt" style="float: right; margin-right: 30px;margin-top: 13px;"></span>
+    </div>
+    <div></div>
+</div>
+
+<!--/////////////////////////modal etiquetas///////////////////////////////////////-->
+<div class="modal" id="modalEtiquetas">
+    <div class="modal-content">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h5>ETIQUETAS PAQUETERIA <span id="loadheaderid"></span></h5>                
+            </div>
+            <div class="modal-body">
+            <!---/////////////////////////////////////////etiquetas///////////////////-->    
+                <div class="col l12 m12 s12">
+                    <div id="etiquetasPaqueteria" style="display: none">
+                        <table id="tablaEtiquetasPaqueteria" class="table" cellpadding="0" cellspacing="0" style="font-size: 12px; font-family: arial"> 
+                            <thead>
+                                    <tr>
+                                        <th style="background-color: #01579B; color: #FFFFFF; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black"><?= $_SESSION['company_name']; ?></th>
+                                        <th style="background-color: #01579B; color: #FFFFFF; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black"></th>
+                                    </tr>
+                            </thead>
+                        </table>
+                        </div>
+                        <select id="sitioEtiquetas">
+                            <option value="">Selecciona...</option>
+                            <option value="CHIH">CHIHUAHUA</option>
+                            <option value="SALT">SALTILLO</option>
+                            <option value="ZACS">ZACATECAS</option>
+                        </select> <select id="propositoEtiquetas">
+                            <option value="">Selecciona...</option>
+                            <option value="Facturacion">FACTURACION</option>
+                            <option value="Entrega">ENTREGA</option>
+                            <option value="Otro">OTRO</option>
+                        </select> 
+                        <input type="checkbox" id="previsEtiqueta" /> 
+                        <label	for="previsEtiqueta">Previsualizar etiqueta</label>
+                        <span id="loading"></span>
+                        <input	type="text" id="OVEti" value="" hidden>
+                        <table id="tablaEtiqueta" class="table" style="display: none">
+                            <thead>
+                                <tr>
+                                    <th><?= $_SESSION['company_name']; ?></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr> 
+                                    <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta " value=" R.F.C. <?= $_SESSION['company_rfc']; ?>" readonly /></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta cliente-top" readonly /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta calle" readonly /></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta monto"></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta colonia" readonly /></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta " readonly value=" *MATERIAL DELICADO, MANEJAR CON CUIDADO* " /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta estado" readonly /></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta correo-cte" placeholder="Email"></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta telefono" readonly /></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta comentario" placeholder="Comentarios"></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable"></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta cliente-bot" readonly /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable"></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente rfc-cte" placeholder="RFC" value="" /></td>
+                                </tr>
+                                <tr>
+                                   
+                                    <td style="width: 49%" class="bordeTable"></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente calle-cte" placeholder="Calle C.P." value=""  /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable"></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente colonia-cte" placeholder="Colonia" value=""  /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable"></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente estado-cte" placeholder="Estado" value=""  /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable"></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente tel-cte" placeholder="Telefono" value=""  /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable userEti"></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente paqyflet" placeholder="Paqueteria y Flete" /></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 49%" class="bordeTable fechaEti"></td>
+                                    <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente tipoentreseg" placeholder="Tipo Entrega/Seguro" /></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <div class="col l3 m3 s3 right">
+                                            <button class="btn flat-btn " id="genArchEti"><i class="fa fa-file-excel-o"></i></button>
+                                        </div>
+                                        <div class="col l3 m3 s3 right">
+                                            <button class="btn flat-btn" id="impArchEti"><i class="fa fa-print"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                <!--///////////////////////////////////////fin etiquetas////////////////////-->
+                </div>
+                <div class="modal-footer">
+	           <button	class="modal-action modal-close waves-effect waves-green btn-flat light-blue darken-4 white-text">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--//////////////////////end modal etiquetas//////////////////////////////////////-->
+<!--////////////////////////Modal Detalle Documento///////////////////////-->
+<div class="modal" id="modalDetalleDoc">
+    <div class="modal-content">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h5>Detalle de Documento <span id="detalleDoc"></span></h5>                
+            </div>
+            <div class="modal-body" id="modalDocumentContent">
+            
+            </div>
+                <div class="modal-footer">
+	           <button	class="modal-action modal-close waves-effect waves-green btn-flat light-blue darken-4 white-text">X&nbsp;Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--//////////////////////end Modal Detalle Documento///////////////////////-->
+
+<!-- Termina row -->
+    <div class="row">
+        <div class="col s12">
+        <div id="OrderLine-Header">
+            <nav class="s12 white-text" style="height: 40px !Important; line-height: 40px !Important; background-color: #006699">
+                <div class="nav-wrapper">               
+                  <ul class="left col l12">
+                    <li><a id="usuarioov">Mis Ordenes De Venta</a></li>
+                    <li><a id="todas">Todas Las Ordenes De Venta</a></li>
+                    <li><a id="misCot">Mis Cotizaciones</a></li>
+                    <li><a id="todasCot">Todas Las Cotizaciones</a></li>
+                    <li><a id="Clientes" onclick="showPasa();">Facturación</a></li>
+                  </ul>
+                </div>
+            </nav>
+
+<!-- Corrige Responsive en Tabla-->
+            </div>
+        </div>
+    </div>
+<div class="row">
+    <div class="col s12">
+        <div class="s12" style="margin-top: 0; background-color: white;">
+            <div class="row"id="pasaForm"></div>
+            <table class=" bordered striped" id="ov">
+                <thead>                  
+                </thead>
+                <tbody></tbody>
+                <tfoot></tfoot>
+            </table>                        
+        </div>
+    </div>
+</div>
+<!-- Termina row -->
+    <div class="row" id="divTabalNegados" style="display:none">
+        <table class="table" id="tablaNegadosExcel">
+            <thead>
+                 <tr>
+                    <th>VENDEDOR</th>
+                    <th>CLAVE</th>
+                    <th>DESCRIPCION</th>
+                    <th>CIENTE</th>
+                    <th>SUCURSAL</th>
+                    <th>CANTIDAD</th>
+                    <th>UNIDAD</th>
+                    <th>REQUIERE VENTA</th>
+                    <th>FECHA</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <textarea id="textarea1" rows="20" cols="20" hidden></textarea>
+    </div>
+    <form action="impresion" method="post" target="_blank" id="imprimirRemision">
+        <input type="hidden" id="rem" name="PackingSlipId" value="">
+        <input type="hidden" id="edoentrega" name="EstadoEntrega" value="">
+    </form>
+    <form action="impresion-cotizacion" method="post" target="_blank" id="imprimirCotizacion">
+        <input type="hidden" id="DCotizacion" name="QuotationId" value="">
+        <input type="hidden" id="CountCotizacion" name="CountCotizacion" value="">
+    </form>
+    <form action="inicio" method="POST" id="editarCotForm">
+        <input type="hidden" id="documentType" name="documentType" value=""/>
+        <input type="hidden" id="DocumentId" name="DocumentId" value=""/>
+        <input type="hidden" id="cliente" name="cliente" value=""/>
+        <input type="hidden" id="editar" name="editar" value=""/>
+    </form>
+    <button type="button" class="btn col l3 m3 s3" id="botLlenar" onclick="llenarTablaNegados('<?php echo $_SESSION['userInax']?>');" style="display:none">Llenar</button> 
+    
+</body>
+
+<script type="text/javascript">
+    var sitiosList='<?php print_r($_SESSION['sucursales'])?>';
+    var user  = "<?php echo $_SESSION['userInax']?>";
+    var loading="<?php echo IMAGES_PATH; ?>";
+    var boton = '';
+    var company='<?= $_SESSION['company_name']; ?>';
+    var cuentaContrapartidaLinea=[];
+    $('#barraProgreso').remove();
+</script>
+<script src="<?= JAVASCRIPT_PATH ?>/views/index.js?v=<?php echo date("dh"); ?>" type="text/javascript"></script>

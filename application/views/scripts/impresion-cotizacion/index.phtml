@@ -1,0 +1,122 @@
+
+<table style="width: 100%">
+     <tr>
+         <td style="width: 15%;"><img src="<?php echo __DIR__."/../../../assets/img"; ?>/verticalLogo.jpg" width="150px;" height="150px;"></td>
+        <td style="font-size: 12px;align-content: center;">
+            <label ><b>Avance y Tecnología en Plásticos SA de CV</b></label><br>
+            <img src="<?php echo __DIR__."/../../../assets/img"; ?>/imagepdf/location_on_1x.jpg"> AV. WASHINGTON #3701 <br> COMPLEJO INDUSTRIAL LAS AMERICAS<br> CHIHUAHUA,CHIH,MEX 3114<br>
+            <img src="<?php echo __DIR__."/../../../assets/img"; ?>/imagepdf/call_1x.jpg"> 01 614 432 6100<br>
+            <img src="<?php echo __DIR__."/../../../assets/img"; ?>/imagepdf/public_1x.jpg"><a href="www.avanceytec.com.mx">www.avanceytec.com.mx</a><br>
+        </td>
+        <td style="font-size: 12px;width: 25%">
+            <img src="<?php echo __DIR__."/../../../assets/img"; ?>/imagepdf/media_1x.jpg" width="200px" height="30px"><br><br>
+            <label style="width: 20%; font-size: 18px;"><b>COTIZACION</b></label><br>
+            <label>Número: </label><label><?php print_r($this->Cotizacion); ?></label><br>
+            <label>Fecha: </label><label><?php print_r($this->Fecha); ?></label><br>
+            <label>Fecha de Vencimiento: </label><label><?php print_r($this->FechaVencimiento); ?></label><br>
+            <label>Pago: </label><label><?php print_r($this->Pago); ?></label>
+        </td>
+    </tr>
+ </table>
+<br><br>
+<table>
+    <tr>
+        <td style="font-size: 13px;">
+            <b>Direccion de envío:</b><br>
+            <label ><?php print_r($this->Cliente); ?></label><br>
+            <label ><?php print_r($this->CalleEntrega); ?></label><br>
+            <label ><?php print_r($this->ColoniaEntrega); ?></label>
+            <label ><?php print_r($this->CiudadEntrega . ', ' . $this->EstadoEntrega . ', ' . $this->PaisEntrega); ?></label>
+            <label><?php print_r($this->CPEntrega); ?></label>
+        </td>
+        <td style="font-size: 12px;">
+            <label><b>Observaciones:</b></label><br>
+            <label>El tipo de cambio del dia <?php print_r($this->actualDate->format('d/m/Y')); ?> es de <?php print_r($this->tipoCambio); ?> pesos por USD</label>
+        </td>
+            </tr>
+        </table>
+<br><br>
+        <table style="width:100% ;font-size: 12px;" border="1" >
+            <tr>
+                <td style="width: 15%;border-bottom: 2px solid black;">Código de artículo</td>
+                <td style="width: 50%;border-bottom: 2px solid black; text-align: left">Descripción</td>
+                <td style="width: 5%;border-bottom: 2px solid black; text-align: right;">Cantidad</td>
+                <td style="width: 10%;border-bottom: 2px solid black;">Unidad</td>
+                <td style="width: 5%;border-bottom: 2px solid black; text-align: right;">P.Unitario</td>
+                <td style="width: 10%;border-bottom: 2px solid black; text-align: right;">Importe</td>
+            </tr>
+            <tr>
+                <?= $this->body ?>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: right;"><b>Subtotal MXN</b></td>
+                <td colspan="2" style="text-align: right;">$<?php print_r($this->Subtotal); ?></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: right;"><b>IVA MXN</b></td>
+                <td colspan="2" style="text-align: right;">$ <?php print_r($this->IVA); ?></td>
+            </tr>
+            <tr>
+                <td colspan="3">Vendedor: <b><?php print_r($this->Vendedor); ?></td>
+                <td style="text-align: right;"><b>Total MXN</b></td>
+                <td colspan="2" style="text-align: right;">$ <?php print_r($this->Total); ?></td>
+            </tr>
+        </table>
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 100%;">
+                    <table  style="width: 100%" cellpading="0" cellspacing="0">
+                        <tr>
+                            <td colspan="3"><b>Para su mayor comodidad, puede depositarnos en:</b></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 12px; background-color: #BDBDBD">BANCO</td>
+                            <td style="width: 30%; font-size: 12px; background-color: #BDBDBD">CUENTA</td>
+                            <td style="width: 40%; font-size: 12px; background-color: #BDBDBD">CLABE INTERBANCARIA</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 12px;">BANCOMER</td>
+                            <td style="width: 30%; font-size: 12px;">0442666073</td>
+                            <td style="width: 40%; font-size: 12px;">012150004426660735</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 12px;">BANCOMER DOLARES</td>
+                            <td style="width: 30%; font-size: 12px;">0442666065</td>
+                            <td style="width: 40%; font-size: 12px;">012180004426660653</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 12px;">HSBC CHIHUAHUA</td>
+                            <td style="width: 30%; font-size: 12px;">128301462-1</td>
+                            <td style="width: 40%; font-size: 12px;">021150012830146213</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 12px;">BANORTE</td>
+                            <td style="width: 30%; font-size: 12px;">0198023159</td>
+                            <td style="width: 40%; font-size: 12px;">072150001980231591</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 12px;">BANAMEX</td>
+                            <td style="width: 30%; font-size: 12px;">673 SUC 4305</td>
+                            <td style="width: 40%; font-size: 12px;">002150430500006734</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 30%; font-size: 12px;">SANTANDER</td>
+                            <td style="width: 30%; font-size: 12px;">65174302218</td>
+                            <td style="width: 40%; font-size: 12px;">014150651743022180</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr><tr>
+                <td style="page-break-after:always;width: 35%;font-size: 11px;">
+                    <p>Observaciones importantes:</p>
+                    <ul>
+                        <li>Le solicitamos por favor antes de realizar su pago confirmar existencias.</li>
+                        <li>Si su pago va a ser por transferencia, nos puede mandar
+                            la imagen por correo o WhatsApp (+52 614 117 7072), para
+                            embarcar su material, si se recibe antes de las
+                            14:00 horas, se embarca ese mismo dia.</li>
+                        <li>Si su material viaja por paqueteria será bajo la responsabilidad del destinatario.</li>
+                    </ul>
+                </td>
+            </tr>
+        </table>

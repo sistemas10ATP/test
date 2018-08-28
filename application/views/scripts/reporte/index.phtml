@@ -1,0 +1,445 @@
+<style>
+    select{
+        display: block !important;
+    }
+</style>
+<script> 
+    $('#rutaReal').remove();
+    <?php
+    
+    foreach ($this->usoGrafica as $k => $v) { 
+        $data23.="['".trim($v['nombre'])."',".$v['conteo']."],";
+    }
+    $indice=$indice2=0;
+    $colors=substr($colors, 0, -1);
+    $labels=substr($labels, 0, -1);
+    $data=substr($data, 0, -1);
+    $data23=substr($data23, 0, -1);
+    
+    foreach ($this->result3 as $l => $v) { 
+        $colors2.= "'rgba(".rand( 1 , 255 ).",".rand( 1 , 255 ).",".rand( 1 , 255 ).", 0.5)',";
+        $labels2.="'".trim($v['SITIO'])."',";
+        $data3.= $v['CONTEOWS_COT'].',';
+        $data2.= $v['CONTEOWS_VTA'].',';
+        $pastel.='';
+    }
+    foreach ($this->confirmaciones as $k => $v) { 
+        $colors4.= "'rgba(".rand( 1 , 255 ).",".rand( 1 , 255 ).",".rand( 1 , 255 ).", 0.5)','rgba(".rand( 1 , 255 ).",".rand( 1 , 255 ).",".rand( 1 , 255 ).", 0.5)','rgba(".rand( 1 , 255 ).",".rand( 1 , 255 ).",".rand( 1 , 255 ).", 0.5)','rgba(".rand( 1 , 255 ).",".rand( 1 , 255 ).",".rand( 1 , 255 ).", 0.5)',";
+        $data4.= $v['CTZN'].','.$v['ORDVTA'].','.$v['CTZNC'].','.$v['ORDVTAC'].',';
+    }
+    foreach ($this->confirmacionesUsuario as $k => $v) { 
+        $colors5.= "'rgba(".rand( 1 , 255 ).",".rand( 1 , 255 ).",".rand( 1 , 255 ).", 0.5)','rgba(".rand( 1 , 255 ).",".rand( 1 , 255 ).",".rand( 1 , 255 ).", 0.5)','rgba(".rand( 1 , 255 ).",".rand( 1 , 255 ).",".rand( 1 , 255 ).", 0.5)','rgba(".rand( 1 , 255 ).",".rand( 1 , 255 ).",".rand( 1 , 255 ).", 0.5)',";
+        $labels5.="'".trim($v['NOMBRE'])."',";
+        $data5.= $v['CTZN'].',';
+        $data6.= $v['ORDVTA'].',';
+        $data7.= $v['CTZNC'].',';
+        $data8.= $v['ORDVTAC'].',';
+    }
+    $colors4=substr($colors4, 0, -1);
+    $labels4="'Cotizacion','Orden Venta','Cotizacion confirmada','Orden Venta confirmada'";
+    $data4=substr($data4, 0, -1);
+    $colors2=substr($colors2, 0, -1);
+    $labels2=substr($labels2, 0, -1);
+    $data2=substr($data2, 0, -1);
+    $data3=substr($data3, 0, -1);
+    $colors5=substr($colors5, 0, -1);
+    $labels5=substr($labels5, 0, -1);
+    $data5=substr($data5, 0, -1);
+    $data6=substr($data6, 0, -1);
+    $data7=substr($data7, 0, -1);
+    $data8=substr($data8, 0, -1);
+    
+    ?>
+    var label=[<?= $labels ?>];
+    var data =[<?= $data ?>];
+    var colors=[<?= $colors ?>];
+    var label2=[<?= $labels2 ?>];
+    var data2 =[<?= $data2 ?>];
+    var colors2=[<?= $colors2 ?>];
+    var data3 =[<?= $data3 ?>];
+    var label4=[<?= $labels4 ?>];
+    var data4 =[<?= $data4 ?>];
+    var colors4=[<?= $colors4 ?>];
+    var label5=[<?= $labels5 ?>];
+    var data5 =[<?= $data5 ?>];
+    var data6 =[<?= $data6 ?>];
+    var data7 =[<?= $data7 ?>];
+    var data8 =[<?= $data8 ?>];
+    var colors5=[<?= $colors5 ?>];
+    
+    
+    var userData = <?= json_encode($this->useDataReport)?>
+    
+    ;
+    
+  </script>
+<ul class="nav nav-tabs nav-justified">
+      <li class="active"><a data-toggle="tab" href="#test1">Uso inax</a></li>
+      <li ><a  data-toggle="tab" onclick="paintGraficaBarrasMix('sesion3',label2,data2,data3,colors2,'Ventas','Cotizaciones');"  href="#test2">Ventas vs Cotizaciones</a></li>
+      <li ><a data-toggle="tab" onclick="paintGraficaBarras('sesion',label,data,colors,'Inicio de session'); " href="#test3">Sesión</a></li>
+      <li ><a data-toggle="tab" href="#negadosList">Lista de negados</a></li>
+      <li ><a data-toggle="tab" href="#general">Semaforo</a></li>
+      <script>
+        if(havePermision(2)){
+            document.write('<li><a  data-toggle="tab" href="#permisos">Permisos</a></li>');
+        }
+        if(havePermision(13)){
+            document.write('<li><a data-toggle="tab" href="#facturacion">Facturación</a></li>');
+        }
+      </script>
+</ul>
+  <br>
+      <div class="tab-content">
+        <div id="general" class="tab-pane fade">
+            <div class="col-sm-2">
+                <form id="semaforo">
+                    Semaforo
+                    <select class="browser-default" name="semaforo" onchange="actualizarSemaforo();">
+                        <?php 
+                        $sel='no definido';
+                        foreach ($this->semaforo as $k => $v) { 
+                            echo '<option value="'.$v['id'].'" '.$v['sel'].'>'.$v['nombre'].'</option>';
+                            if($v['sel']=='selected                                          '){
+                                $sel=$v['color'];
+                            }
+                        }
+                        ?>
+                    </select>
+                    <div id="procesoSemaforo"></div>
+                </form>
+            </div>
+        </div>
+          <div id="facturacion" class="tab-pane fade">
+                <div class="col-lg-4">
+                    <div class="panel panel-primary">
+                          <div class="panel-heading">Total Facturas
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                  <input type="date" name="f1tbl" id="f1tbl5" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl5();"> al
+                                  <input type="date" name="f2tbl" id="f2tbl5" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl5();">
+                                </div>
+                            </div>
+                          </div>  
+                          <div class="panel-body">
+                             <div id="chart_div"><center><img src="../application/assets/img/gif-load.gif" style="width: 6em;"></center></div>
+                          </div>
+                    </div>    
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-primary">
+                          <div class="panel-heading">Grafica Facturas 
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                  <input type="date" name="f1tb6" id="f1tbl6" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl6();"> al
+                                  <input type="date" name="f2tb6" id="f2tbl6" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl6();">
+                                </div>
+                            </div>
+                          </div>  
+                          <div class="panel-body">
+                             <div id="chart_div2"><center><img src="../application/assets/img/gif-load.gif" style="width: 6em;"></center></div>
+                          </div>
+                    </div>    
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-primary">
+                          <div class="panel-heading">Grafica Facturas
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                  <input type="date" name="f1tb6" id="f1tbl7" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl7();"> al
+                                  <input type="date" name="f2tb6" id="f2tbl7" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl7();">
+                                </div>
+                            </div>
+                          </div>  
+                          <div class="panel-body">
+                             <div id="chart_div3"><center><img src="../application/assets/img/gif-load.gif" style="width: 6em;"></center></div>
+                          </div>
+                    </div>    
+                </div>
+                <div class="col-md-5">
+                    <div class="panel panel-primary">
+                          <div class="panel-heading">Tabla de facturas hechas en inax 
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                  <input type="date" name="f1tbl" id="f1tbl3" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl3();"> al
+                                  <input type="date" name="f2tbl" id="f2tbl3" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl3();">
+                                </div>
+                            </div>
+                          </div>  
+                          <div class="panel-body">
+                              <table id="tblReport3" class="tbl table-striped">
+                                  <thead>
+                                      <tr>
+                                          <th>USUARIO</th><th>CANTIDAD</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                  </tbody>          
+                              </table>
+                          </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="panel panel-primary">
+                          <div class="panel-heading">Tabla de facturas hechas en inax 
+                            <div class="pull-right">
+                                <div class="btn-group">
+                                  <input type="date" name="f1tbl" id="f1tbl4" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl4();"> al
+                                  <input type="date" name="f2tbl" id="f2tbl4" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl4();">
+                                </div>
+                            </div>
+                          </div>  
+                          <div class="panel-body">
+                              <table id="tblReport4" class="tbl table-striped">
+                                  <thead>
+                                      <tr>
+                                          <th>SUCURSAL</th><th>CANTIDAD</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody></tbody>          
+                              </table>
+                          </div>
+                    </div>
+                </div>
+          </div>
+        <div id="test1" class="tab-pane fade in active">
+            <div class="col-sm-5">
+                <div id="chart_div2"></div>
+            </div>
+            <div class="col-sm-7">
+                <div id="chart_div"></div>
+            </div>
+            <div class="col-sm-12">
+                <div id="chart_uses"></div>
+            </div>
+            <div class="col-sm-12">
+                <br>
+                <form id="tblKardex2">
+                <table class="table table-responsive table-striped" id="tblKardex">
+                    <thead>
+                        <tr style="background-color: #f2f2f2;">
+                            <th># <!--<input style="max-width: 65px;" class="form-control" disabled="" id="total"> --></th>
+                            <th>Folio <!--<input class="form-control" name="folio" value="" onchange="getKardexFilter();">--></th>
+                            <th>Usuario <!--<input class="form-control" name="usuario" onchange="getKardexFilter();">--></th>
+                            <th>Nombre <!--<input class="form-control" name="nombre" onchange="getKardexFilter();">--></th>
+                            <th>Fecha <!--
+                                <input class="form-control" type="date" name="fecha1" value="<?= $this->fechaInput ?>" onchange="getKardexFilter();">
+                                <input class="form-control" type="date" name="fecha2" value="<?= $this->fechaInput ?>" onchange="getKardexFilter();"> -->
+                            </th>
+                                <th>Tipo de movimiento 
+                                    <!--<select class="form-control" name="tpMov" id="tpMov" onchange="getKardexFilter();">
+                                        <option value="" selected="">Todos</option>
+                                        <option value="ALTA CLIENTE" >ALTA CLIENTE</option>
+                                        <option value="CTZN">Cotización</option>
+                                        <option value="CTZNC">Cotización confirmada</option>
+                                        <option value="ORDVTA">Orden de venta</option>
+                                        <option value="ORDVTAC">Orden de venta confirmada</option>
+                                        <option value="inicio de sesion">Inicio sesión</option>
+                                    </select> --></th>
+                                    <th>Sucursal 
+                                        <!--<select class="form-control" name="sucursal" id="sucursal" onchange="getKardexFilter();">
+                                            <option value="" selected="">Todas</option>
+                                            <option value="AGUASCALIENTES">AGUASCALIENTES</option>
+                                            <option value="CHIHUAHUA">CHIHUAHUA</option>
+                                            <option value="CULIACAN">CULIACAN</option>
+                                            <option value="DURANGO">DURANGO</option>
+                                            <option value="EDO. MEX">EDO. MEX</option>
+                                            <option value="GUADALAJARA">GUADALAJARA</option>
+                                            <option value="HERMOSILLO">HERMOSILLO</option>
+                                            <option value="JUAREZ">JUAREZ</option>
+                                            <option value="LEON">LEON</option>
+                                            <option value="MEXICALI">MEXICALI</option>
+                                            <option value="MONTERREY">MONTERREY</option>
+                                            <option value="OBREGON">OBREGON</option>
+                                            <option value="PUEBLA">PUEBLA</option>
+                                            <option value="QUERETARO">QUERETARO</option>
+                                            <option value="SALTILLO">SALTILLO</option>
+                                            <option value="SLP">SLP</option>
+                                            <option value="TIJUANA">TIJUANA</option>
+                                            <option value="TORREON">TORREON</option>
+                                            <option value="VERACRUZ">VERACRUZ</option>
+                                            <option value="ZACATECAS">ZACATECAS</option>                                            
+                                        </select>-->
+                                    </th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblContent">
+                        <?php /*foreach ($this->result as $k => $v) {
+                        if($k==0){$indice=1;}
+                            echo '<tr><td>'.$indice.'</td><td>'.$v['id_kardex'].'</td><td>'.$v['usuario'].'</td><td>'.$v['nombre'].'</td><td>'.$v['fecha'].'</td><td>'.$v['movimiento'].'</td><td>'.$v['sucursal'].'</td></tr>';
+                            $indice++;
+                        } */?>
+                    </tbody>                    
+                </table>
+                </form>
+            </div>        
+        </div>
+        <div id="permisos" class="tab-pane fade">
+            <div class="col-md-8">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Lista de permisos</div>
+                    <div class="panel-body">
+                        <table id="permisosTable">
+                                <thead><tr><th>Usuario</th><th>Permiso</th></tr></thead>
+                                <tbody>
+                                    <?php 
+                                     foreach ($this->usrListPermiso as $key => $v) {
+                                         echo '<tr><td><i class="fa fa-trash" onclick="eliminarPermiso('.$v['id'].')" style="color:red;cursor: pointer;"></i>  '.$v['Usuario'].'</td><td>'.$v['Roll'].'</td></tr>';
+                                     }
+                                    ?>
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Asignar permisos</div>
+                    <div class="panel-body">
+                        <form id="permisoAsign">
+                            <label>Usuario</label>
+                            <select class="form-control" name="idUsr">
+                                <?php
+                                    foreach ($this->usrList as $key => $v) {
+                                        echo '<option value="'.$v['idUsr'].'">'.$v['Usuario'].'</option>';
+                                    }                                
+                                ?>                                
+                            </select>
+                            <label>Permiso</label>
+                            <select name="idRoll" class="form-control">
+                                <?php
+                                    foreach ($this->permisoList as $key => $v) {
+                                        echo '<option value="'.$v['idRoll'].'">'.$v['Roll'].'</option>';
+                                    }                                
+                                ?>                                
+                            </select>
+                        </form>
+                        <div class="col-md-12">
+                            <hr>
+                            <div class="pull-left">
+                                <span id="loaderNewRoll"></span>
+                            </div>
+                            <div class="pull-right">
+                                <button class="btn btn-default" onclick="agregarPermiso();"><i class="fa fa-save"></i>Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div class="col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">Nuevo Permiso</div>
+                    <div class="panel-body">
+                        <label>Nombre del Permiso</label>
+                        <input class="form-control" name="permisoNew">
+                    </div>
+                </div>
+            </div> -->
+        </div>
+        <div id="test2" class="tab-pane fade"><canvas id="sesion3"></canvas></div>
+        <div id="test3" class="tab-pane fade"><canvas id="sesion"></canvas></div>  
+        <div id="negadosList" class="tab-pane fade">
+            <div class="col-sm-12">
+                <button type="button" onclick="$('#negadostbl').submit();" class="btn btn-success"><i class="fa fa-file-excel-o fixed"></i> CSV</button>
+            </div>
+            <div class="col-sm-12" style="max-height: 45em; overflow-y: scroll;">
+                <form id="negadostbl" method="post" action="reporte/negadostbl2csv">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr style="background-color: #f2f2f2;">
+                                <th># <label id="total2"></label></th>
+                                <th>Vendedor 
+                                    <input class="form-control" name="vendedor" value="" onchange="setNegadosFilter();">
+                                </th>
+                                <th style="min-width: 100px;">Clave</th>
+                                <th>Descripción</th>
+                                <th>Cliente</th>
+                                <th>Sucursal</th>
+                                <th>Cantidad</th>
+                                <th>Unidad</th>
+                                <th>Requiere venta</th>
+                                <th>Fecha <br>
+                                    <input class="form-control" type="date" name="fecha1" value="<?= $this->fechaInput ?>" onchange="setNegadosFilter();" >
+                                    <input class="form-control" type="date" name="fecha2" value="<?= $this->fechaInput ?>" onchange="setNegadosFilter();" >
+                                </th>                        
+                            </tr>
+                        </thead>
+                        <tbody id="tblNegados"  >
+                            <?php foreach ($this->listaNegados as $k => $v) {
+                            if($k==0){$indice2=1;}
+                                echo '<tr><td>'.$indice2.'</td><td>'.$v['0'].'</td><td>'.$v['1'].'</td><td>'.$v['2'].'</td><td>'.$v['3'].'</td><td>'.$v['4'].'</td><td>'.$v['5'].'</td><td>'.$v['6'].'</td><td>'.$v['7'].'</td><td>'.$v['8'].'</td></tr>';
+                                $indice2++;
+                            } ?>
+                        </tbody>                    
+                    </table>
+                </form> 
+            </div>
+            
+        </div>
+     </div>
+    <script src="<?= JAVASCRIPT_PATH ?>/views/reporte.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>
+    <script type="text/javascript" src="<?= JAVASCRIPT_PATH ?>/googleCharts.js"></script>
+    <script type="text/javascript">
+        $('#total2').html('<?= $indice2; ?>');
+        $('#total').val('<?= $indice; ?>');
+        var data23 =[<?= $data23 ?>];
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawChart2);
+        if(havePermision(13)){
+            google.charts.setOnLoadCallback(filterTbl5);
+            google.charts.setOnLoadCallback(filterTbl6);
+            google.charts.setOnLoadCallback(filterTbl7);
+            filterTbl3();
+            filterTbl4();
+        }
+        $('#tblKardex').DataTable();
+        $('#permisosTable').DataTable();
+
+
+
+ var userData = <?= json_encode($this->useDataReport)?>;
+
+
+
+         google.charts.load('current', {'packages':['line']});
+        google.charts.setOnLoadCallback(drawChart);
+        
+        
+        function drawChart() {
+
+      var data = new google.visualization.DataTable();
+      
+        <?php 
+            
+            echo ("data.addColumn('string', 'hora');");
+            foreach( $this->useTipoReport as $tipo){
+                 echo ("data.addColumn('number', '$tipo');");
+            }
+        
+        ?>
+
+      data.addRows(userData);
+
+      var options = {
+        chart: {
+          title: '',
+          subtitle: ''
+        },
+        width: "100%",
+        height: 500,
+        axes: {
+          x: {
+            0: {side: 'top'}
+          }
+        }
+      };
+
+      var chart = new google.charts.Line(document.getElementById('chart_use'));
+
+      chart.draw(data, google.charts.Line.convertOptions(options));
+    }
+
+
+
+    </script>

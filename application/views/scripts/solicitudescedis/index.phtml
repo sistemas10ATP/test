@@ -1,0 +1,44 @@
+
+<div class="panel panel-primary">
+    <div class="panel-heading"><label style="margin-right: 7px;">Lista de traspasos</label><label id="tituloLbl"></label><div class="pull-right"><i class="fa fa-list"></i></div></div>
+    <br>
+    <ul class="nav nav-tabs nav-justified" id="navStatus">
+          <li style="display: none" id="liNavNuevo"><a data-toggle="tab" href="#nuevo">Nuevo</a></li>
+          <li style="display: none" id="liNavRecibido"><a data-toggle="tab" href="#recibido">Recibido</a></li>
+          <li style="display: none" id="liNavEnviado"><a data-toggle="tab" href="#enviado">Enviado</a></li>
+          <li style="display: none"  id="liNavRegistrado"><a data-toggle="tab" href="#registrado">Registrado</a></li>
+          <li style="display: none" id="liNavCancelado"><a data-toggle="tab" href="#cancelado">Cancelado</a></li>
+          <script>
+            /*if(havePermision(2)){
+                document.write('<li><a  data-toggle="tab" href="#permisos">Permisos</a></li>');
+            }
+            if(havePermision(13)){
+                document.write('<li><a data-toggle="tab" href="#facturacion">Facturación</a></li>');
+            }*/
+          </script>
+    </ul>
+    <br>
+    <div class="tab-content" id="allContent"></div>
+</div>
+<div id="editar" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+          <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close" style="color: red;"></i></button>
+        <h4 class="modal-title">Editar traspaso</h4>
+      </div>
+      <div class="modal-body" id="contentModal"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="<?= JAVASCRIPT_PATH ?>/views/solicitudescedis.js?v=<?php echo date("dh"); ?>" type="text/javascript"></script>
+<script>
+    var cliente=<?= $this->cliente ?>;
+    $(document).ready(function(){
+        getFilterData('<?php echo filter_input(INPUT_GET, 'id'); ?>');
+    });
+</script>

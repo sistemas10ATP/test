@@ -1,0 +1,254 @@
+<script src="<?= JAVASCRIPT_PATH ?>/views/comisiones.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="./?"><i class="fa fa-home"> Home</i></a></li>
+            <li class="breadcrumb-item active"><i class="fa fa-newspaper-o bg-info"></i> Comisiones</li>
+        </ol>        
+    </div>
+</div>
+<ul class="nav nav-tabs nav-justified">
+    <li class="active"><a data-toggle="tab" href="#reportes-tab">Reporte</a></li>
+  <li><a data-toggle="tab" href="#alta-tab">Administración Comisionista</a></li>
+</ul>
+<div class="tab-content">
+    <div id="reportes-tab" class="tab-pane fade in active">
+        <hr>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <i class="fa fa-address-card"></i> Reporte
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <form id="comisionistaFilterTbl">
+                            <label>Comisionista:</label>
+                            <input type="text" id="comisionistaListFilter" name="comisionista" class="form-control">
+                            <label>Mes:</label>
+                            <select class="form-control" style="color: #000;" name="mes">
+                                <option value="">Seleccione..</option>
+                                <?php
+                                    foreach ($_SESSION['MESES_STR'] as $key => $v) {
+                                        echo '<option value="'.$key.'">'.$v.'</option>';
+                                    }
+                                ?>    
+                            </select>
+                        </form>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="pull-left">
+                            <div class="row">
+                                <button class="btn btn-default" type="button" onclick="refreshTableReport();"><i class="fa fa-server"></i> Filtrar&nbsp;&nbsp;&nbsp;</button>
+                            </div>
+                            <div class="row" style="margin-top: 6px;">
+                                <a class="btn btn-default" type="button" onclick="newPDF('comisionistaFilterTbl','comisionespdf')"><i class="fa fa-file-pdf-o"></i> Exportar</a>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <div class="row">
+                                <div class="col-md-6"><label>Total MXN </label></div>
+                                <div class="col-md-6"><input type="number" id="total" readonly="" class="form-control text-right " value="0.0"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"><label>Total de Comision a Facturar</label></div>
+                                <div class="col-md-6"><input type="number" id="totalCom" readonly="" class="form-control text-right" value="0.0"></div>
+                            </div>           
+                        </div>
+                    </div>
+                    
+                </div>
+                <br>
+                <label class="text-uppercase text-danger">Clientes Conseguidos</label>
+                <br>
+                <table id="reporte-tbl" class="table table-striped">
+                    <thead>
+                        <tr><th>Comisionista</th><th># Cliente</th><th>Articulo</th><th>Venta MXN</th><th>Comisión</th><th>Total</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>       
+            </div>
+        </div>
+    </div>
+    <div id="alta-tab" class="tab-pane fade">
+        <hr>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <i class="fa fa-address-card"></i> Configuración
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-default pull-right top-right clearfix" type="button" onclick="showBlock('#comisionistaVendedor');" ><i class="fa fa-address-book"></i> Comisionista - Cliente</button>
+                    <button class="btn btn-default pull-right top-right clearfix" type="button" onclick="showBlock('#nuevoComisionista');" ><i class="fa fa-plus-circle"></i> Agregar Nuevo Comisionista</button>
+                </div>
+            </div>
+                <hr>
+                <div id="nuevoComisionista" class="panel panel-default" style="display: none;" >
+                <div class="panel-heading" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo" aria-expanded="false">
+                    <h4 class="panel-title"><i class="fa fa-address-book"></i> Alta de comisionistas</h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse in" aria-expanded="false">
+                    <div class="panel-body">
+                        <form id="comisionistaNuevoForm" method="POST" action="">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label>Nombre de Comisionista:</label>
+                                    <input class="form-control" name="nombre" onkeyup="this.value=this.value.toUpperCase();" required="">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Dirección:</label>
+                                    <input class="form-control" name="direccion" onkeyup="this.value=this.value.toUpperCase();" required="">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Teléfono:</label>
+                                    <input class="form-control" name="telefono" onkeyup="this.value=this.value.toUpperCase();" required="">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Estado:</label>
+                                    <select class="form-control" name="estado" required="">
+                                        <option value="">Seleccione...</option>
+                                        <option value="Aguascalientes">Aguascalientes</option>
+                                        <option value="Baja California">Baja California</option>
+                                        <option value="Baja California Sur">Baja California Sur</option>
+                                        <option value="Campeche">Campeche</option>
+                                        <option value="Chiapas">Chiapas</option>
+                                        <option value="Chihuahua">Chihuahua</option>
+                                        <option value="Cuidad de México">Ciudad de México</option>
+                                        <option value="Coahuila">Coahuila</option>
+                                        <option value="Colima">Colima</option>
+                                        <option value="Durango">Durango</option>
+                                        <option value="Guanajuato">Guanajuato</option>
+                                        <option value="Guerrero">Guerrero</option>
+                                        <option value="Hidalgo">Hidalgo</option>
+                                        <option value="Jalisco">Jalisco</option>
+                                        <option value="México">México</option>
+                                        <option value="Michoacán">Michoacán</option>
+                                        <option value="Morelos">Morelos</option>
+                                        <option value="Nayarit">Nayarit</option>
+                                        <option value="Nuevo León">Nuevo León</option>
+                                        <option value="Oaxaca">Oaxaca</option>
+                                        <option value="Puebla">Puebla</option>
+                                        <option value="Querétaro">Querétaro</option>
+                                        <option value="Quintana Roo">Quintana Roo</option>
+                                        <option value="San Luis Potosí">San Luis Potosí</option>
+                                        <option value="Sinaloa">Sinaloa</option>
+                                        <option value="Sonora">Sonora</option>
+                                        <option value="Tabasco">Tabasco</option>
+                                        <option value="Tamaulipas">Tamaulipas</option>
+                                        <option value="Tlaxcala">Tlaxcala</option>
+                                        <option value="Veracruz">Veracruz</option>
+                                        <option value="Yucatán">Yucatán</option>
+                                        <option value="Zacatecas">Zacatecas</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Ciudad</label>
+                                    <input class="form-control" name="ciudad" onkeyup="this.value=this.value.toUpperCase();" required="">
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-default" style="margin-top: 23px;" type="submit" onclick="putDataNewCom('#comisionistaNuevoForm','comisiones/alta-Cliente')"><i id="btn-add-comisionista" class="fa fa-save"></i> Guardar</button>
+                                    <span id="loading"></span>
+                                </div>
+                            </div>
+                        </form>    
+                    </div>
+                </div>
+            </div>
+                <div id="comisionistaVendedor" class="panel panel-default" style="display: none;">
+                <div class="panel-heading" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne" aria-expanded="false">
+                    <h4 class="panel-title"><i class="fa fa-address-book"></i> Comisionista - Cliente</h4>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="false">
+                    <div class="panel-body">
+                        <form id="comisionistaAsociarForm" method="POST" action="">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label>Mes a comisionar:</label>
+                                    <select name="mes" class="form-control">
+                                        <option value="">Seleccione...</option>
+                                        <?php
+                                            foreach ($_SESSION['MESES_STR'] as $key => $v) {
+                                                echo '<option value="'.$key.'">'.$v.'</option>';
+                                            }
+                                        ?>   
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Articulo:</label>
+                                    <input id="articuloList" class="form-control" name="articulo">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Nombre de Comisionista:</label>
+                                    <input id="comisionistaList" class="form-control" value="">
+                                    <input id="comisionistaList2" type="hidden" name="comisionista">
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Cliente</label>
+                                    <input id="clientListComisiones" class="form-control" name="cliente" >
+                                </div>
+                                <div class="col-md-2">
+                                    <label>Comision por venta</label>
+                                    <input type="number" class="form-control" name="comision">
+                                </div>
+                                <div class="col-md-2">
+                                    <button id="comisionistaAsociarBtn" class="btn btn-default" style="margin-top: 23px;" type="submit" onclick="putData('#comisionistaAsociarForm','comisiones/alta-Comisionista-Cliente');"><i id="gdr-comisionistaAsociarBtn" class="fa fa-save"></i>Guardar</button>
+                                </div>
+                            </div>
+                        </form>                                  
+                    </div>
+                </div>
+            </div>
+                <hr>
+                <table class="table table-striped" id="tblComisionistasAsignados">
+            <thead>
+                <tr>
+                    <th>Mes</th><th>Articulo</th><th>comisionista</th><th>Cliente</th><th>Comisión</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                foreach ($this->comisionistaAsignadoList as $k => $v) {
+                echo '<tr id="row'.$v['idcomComisionCliente'].'">'
+                      . '<td>'.$_SESSION['MESES_STR'][(integer)$v['mes']].'</td>'
+                      . '<td>'.$v['item'].'</td>'
+                      . '<td>'.$v['comisionista'].'</td>'
+                      . '<td>'.$v['cliente'].' '.$v['clientenom'].'</td>'
+                      . '<td>'.(double)$v['comision'].'</td>'
+                      . '<td><i id="icon'.$v['idcomComisionCliente'].'" onclick="deleteComisionistaCliente('.$v['idcomComisionCliente'].');" style="color:red;" class="fa fa-trash"></i> </td>'
+                    . '</tr>';
+                } ?>                            
+            </tbody>
+        </table> 
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal de comisionista -->
+<div id="comisionistaModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header btn-info">
+                <label>Detalle de Comisionista</label>
+            </div>
+            <div class="modal-body">
+                <label>Teléfono</label>
+                <input class="form-control" id="comisionistaTelefono" readonly="">
+                <label>Dirección</label>
+                <textarea id="comisionistaDireccion" class="form-control" readonly=""></textarea>                                
+            </div>  
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>            
+</div>
+
+<script type="text/javascript">
+    var comisionista=<?php print_r($this->comisionistaList); ?>;
+    autocompleteSetValue(mapArticulo(<?php print_r($this->articuloList); ?>),'#articuloList');
+    autocompleteSetLabel(mapArray(comisionista),'#comisionistaList');
+    autocompleteSetLabel(mapArray(comisionista),'#comisionistaListFilter');
+    autocompleteSetValue(mapClient(<?php print_r($this->clienteList); ?>),'#clientListComisiones');
+    $("#tblComisionistasAsignados").DataTable();
+    $("#reporte-tbl").DataTable();
+</script>

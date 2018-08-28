@@ -1,0 +1,50 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 23, 2018, 4:18:56 PM
+    Author     : sistemas10
+*/
+
+a:hover { cursor: pointer; } 
+.navbar-inverse {
+    background-color: #0f579a !important;
+    border-color: #0f579a;
+}
+#imgTiket canvas{
+    width: 300px !important;
+}
+#cuerpo{
+    padding: 1em 0 1em 0;
+}
+.expandirMenu {
+    width: 240px;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+.compactarMenu {
+    width: 58px;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+#logoIcon {
+    width: 20px;
+}
+
+.compactarHMF {
+    padding-left: 55px;
+} 
+.navbar-brand > img {
+    max-width: 99px;
+    display: block;
+}

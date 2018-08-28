@@ -1,0 +1,1331 @@
+<script>
+    var payModeList=<?php echo json_encode($this->payMode);?>;
+    var cargoOptions = JSON.parse('<?php print_r(json_encode($this->cargos)); ?>');
+    var paymmodedoc = '<?php if (isset($_POST['PAYMMODE'])) {print_r($_POST['PAYMMODE']);} ?>';    
+</script>
+<style>
+
+    #materialize-lean-overlay-4 {
+        display: none;
+    }
+
+    #dropdownDirecciones {
+        min-height: calc(100vh - 40vh);
+        background: white;
+    }
+
+    #dropdownDirecciones table tr th:first-child, #dropdownDirecciones table tr td:first-child,
+    #dropdownDirecciones>div:nth-child(2), #dropdownDirecciones>div:nth-child(3)
+    {
+        display: none;
+        opacity: .5;
+    }
+    .selected{
+        background-color: #FFFFFF;
+        border-style: solid;
+        border-color: #48cbf3;
+        border-width: 1.5px;
+    }
+    #dropdownDirecciones {
+        min-height: calc(100vh - 40vh);
+        background: white;
+    }
+    #procesos>li>.active{
+        color: #000;
+        background-color: #ffffff;
+    }
+    h5.load-title:after {
+        content: 'Cargando...';
+        background-color: #757575;
+        font-size: 10px;
+        padding: 2.5px 5px;
+        border-radius: 3px;
+        color: white;
+        display: inline;
+        vertical-align: middle;
+        margin-left: 10px;
+        padding-left: 20px;
+        background-image:
+            url(http://khayilsbakeshop.com/wp-content/plugins/wp-order-extension/images/gif-load.gif);
+        background-size: 25px;
+        background-position: -2px center;
+        background-repeat: no-repeat;
+    }
+
+    .h5Form {
+        background-color: #002050;
+        color: White;
+        font-size: 14px;
+        height: 24px;
+    }
+
+    .h5Form i {
+        background-color: #0078D7;
+        color: White;
+        line-height: 18px;
+        padding: 5px;
+    }
+
+    .disable_a_href {
+        pointer-events: none;
+    }
+
+    @media only screen and (max-height: 767px) {
+        #rowResumenPartidas {
+            height: 460px;
+            overflow-y: scroll;
+        }
+        body.theme form#FormArticulos>.row+.row {
+            height: 460px;
+            overflow: scroll;
+        }
+    }
+
+    @media only screen and (max-height:900px) and (min-height: 768px) {
+        #rowResumenPartidas {
+            height: 620px;
+            overflow-y: scroll;
+        }
+        body.theme form#FormArticulos>.row+.row {
+            height: 620px;
+            overflow: scroll;
+        }
+        input.formResizeInput {
+            height: 80%;
+        }
+    }
+
+    @media only screen and (min-height: 901px) {
+        #rowResumenPartidas {
+            height: 800px;
+            overflow-y: scroll;
+        }
+        body.theme form#FormArticulos>.row+.row {
+            height: 800px;
+            overflow: scroll;
+        }
+    }
+
+    span[role=combobox] {
+        border-bottom: 1px solid #9e9e9e !important;
+        border-top: 0 !important;
+        border-left: 0 !important;
+        border-right: 0 !important;
+    }
+
+    .bordeTable {
+        border: 1px solid grey;
+        height: 15px;
+    }
+
+    .datoEtiqueta {
+        border-bottom: none !important;
+        height: 2rem !important;
+        font-size: 12px !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    .list-client {
+        font-size: 12px;
+    }
+
+    .divInfo {
+        background-color: red;
+        overflow: hidden;
+    }
+
+    .blk {
+        animation: blinker 1s linear infinite;
+    }
+
+    .sale-box,.sale-box.two,.sale-box.three{
+        position: absolute;
+        top: 0;
+        overflow: hidden;
+        height: 130px;
+        width: 143px;
+        text-align: center;
+        z-index: 0;
+        right:0;
+        border-top-right-radius: 0.7em;
+        -o-border-top-right-radius: 0.7em;
+        -moz-border-top-right-radius: 0.7em;
+        -webkit-border-top-right-radius: 0.7em;
+    }
+
+    .sale-box span.on_sale{
+        font-size: 14px;
+        color: #444;
+        background: #ffd400;
+        text-transform: uppercase;
+        padding: 58px 35px 17px 40px;
+        width: 281px;
+        text-align: center;
+        display: block;
+        position: absolute;
+        left: -47px;
+        top: -41px;
+        -moz-transition: all 0.5s ease;
+        -webkit-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+        -webkit-transform: rotate(-44deg);
+        -ms-transform: rotate(-44deg);
+        transform: rotate(40deg);
+        box-shadow: 3px -4px 13px 3px rgba(0,0,0,0.75);
+    }
+
+    @keyframes blinker { 50% {
+                             opacity: 0;
+                         }
+    }
+    #modal1.modal{
+        width: 95% !important;
+    }
+</style>
+
+<?php
+$tpo = $this->documentType;
+if ($tpo == '') {
+    $tpo = 'CTZN';
+}
+if (isset($_POST['documentType'])) {
+    if (isset($_GET['tipo'])) {
+        if ($_POST['documentType'] == '' && $_GET['tipo'] == '') {
+            header('location:index');
+        }
+    }
+}
+?>
+<!--/////////////////////////modal etiquetas///////////////////////////////////////-->
+<div class="modal" id="modalEtiquetas">
+    <div class="modal-content">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h5>ETIQUETAS PAQUETERIA <span id="loadheaderid"></span></h5>
+            </div>
+            <div class="modal-body">
+                <!---/////////////////////////////////////////etiquetas///////////////////-->
+                <div class="col l12 m12 s12">
+                    <div id="etiquetasPaqueteria" style="display: none">
+                        <table id="tablaEtiquetasPaqueteria" class="table" cellpadding="0" cellspacing="0" style="font-size: 12px; font-family: arial">
+                            <thead>
+                                <tr>
+                                    <td style="background-color: #01579B; color: #FFFFFF; border-left: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black">AVANCE Y TECNOLOGIA EN PLASTICOS</td>
+                                    <td style="background-color: #01579B; color: #FFFFFF; border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black">
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <select id="sitioEtiquetas" class="browser-default"></select>
+                    <br>
+                    <select id="propositoEtiquetas"></select> 
+                    <input type="checkbox" id="previsEtiqueta" /> 
+                    <label for="previsEtiqueta">Previsualizar etiqueta</label>
+                    <span id="loading"></span>
+                    <input type="text" id="OVEti" value="" hidden>
+                    <table id="tablaEtiqueta" class="table" style="display: none">
+                        <thead>
+                            <tr>
+                                <th><?= $_SESSION['company_name']; ?></th>
+                                <th></th>
+                            </tr> 
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta " value=" R.F.C. <?= $_SESSION['company_rfc']; ?>" readonly /></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta cliente-top" readonly /></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta calle" readonly /></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta monto"></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta colonia" readonly /></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta " readonly value=" *MATERIAL DELICADO, MANEJAR CON CUIDADO* " /></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta estado" readonly /></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente correo-cte" ></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"><input type="text" class="datoEtiqueta telefono" readonly /></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta comentario" placeholder="Comentarios"></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta cliente-bot" readonly /></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente rfc-cte" placeholder="RFC" value="" readonly /></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente calle-cte" placeholder="Calle C.P." value=""  /></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente colonia-cte" placeholder="Colonia" value=""  /></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente estado-cte" placeholder="Estado" value=""  /></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable"></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente tel-cte" placeholder="Telefono" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable userEti"></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente paqyflet" placeholder="Paqueteria y Flete" /></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 49%" class="bordeTable fechaEti"></td>
+                                <td style="width: 50%" class="bordeTable"><input type="text" class="datoEtiqueta datoEtiquetaCliente tipoentreseg" placeholder="Tipo Entrega/Seguro" /></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <div class="col l3 m3 s3 right">
+                                        <button class="btn flat-btn " id="genArchEti"><i class="fa fa-file-excel-o"></i></button>
+                                    </div>
+                                    <div class="col l3 m3 s3 right">
+                                        <button class="btn flat-btn" id="impArchEti"><i class="fa fa-print"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!--///////////////////////////////////////fin etiquetas////////////////////-->
+            </div>
+            <div class="modal-footer">
+                <button
+                    class="modal-action modal-close waves-effect waves-green btn-flat light-blue darken-4 white-text">X&nbsp;Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--//////////////////////end modal etiquetas//////////////////////////////////////-->
+
+<!-- Modal loading -->
+<div id="modalLoading">
+    <div class="modal-content" style="text-align: center">
+        <div class="cssload-thecube">
+            <div class="cssload-cube cssload-c1"></div>
+            <div class="cssload-cube cssload-c2"></div>
+            <div class="cssload-cube cssload-c4"></div>
+            <div class="cssload-cube cssload-c3"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Prestashop -->
+<div id="modalPrestashop" class="modal bottom-sheet"
+     style="max-height: 90%;">
+    <div class="modal-content ">
+        <a class="btn-floating btn-large waves-effect waves-light red"
+           id="prestashop1"><i class="material-icons">filter_1</i></a> <a
+           class="btn-floating btn-large waves-effect waves-light green"
+           id="prestashop2"><i class="material-icons">filter_2</i></a> <a
+           class="btn-floating btn-large waves-effect waves-light blue"
+           id="prestashop3"><i class="material-icons">filter_3</i></a>
+        <iframe src="" frameborder="0" id="iframePrestashop" width="100%"
+                height="600" scrolling="no"></iframe>
+    </div>
+    <div class="modal-footer">
+        <button
+            class="modal-action modal-close btn col l3 m3 s10 offset-l8 offset-m6 offset-s1 white-text red darken-4"
+            type="button">
+            <i class="material-icons left">call_received</i> CERRAR VENTANA
+            INFORMATIVA
+        </button>
+    </div>
+</div>
+
+<!-- Modal negados -->
+<div id="modalNegados" class="modal">
+    <div class="modal-content">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 style="text-align: center" class="light-blue darken-4 white-text">
+                    <i class="mdi-alert"></i> Negados <i class="warning"></i>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <h5 style="text-align: center">Agregando a negados el siguiente	articulo:</h5>
+                <div class="row" id="contenedorNegado"></div>
+            </div>
+            <div class="modalfooter">
+                <div class="row">
+                    <button	class="btn col l3 m3 s10 offset-l8 offset-m6 offset-s1 light-blue darken-4 white-text" id="agregarNegado" onclick="guardarNegados('<?php print_r($_SESSION['edicion']); ?>', '<?php echo $tpo; ?>');">Agregar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="LineaArticulo" value="">
+<div class="row" id="cabeceraDiv">	
+    <div class="row" style="background-color: White;">
+        <div class="col s4 title-header-pant"><label><a href="./?"><i class="material-icons">home</i></a></label><label><i class="material-icons">keyboard_arrow_right</i></label><label><?= $this->titulo ?></label></div>
+        <div class="col s2 offset-s6" style="text-align:right ; background-color: White; text-align: left;">
+            <button style="" class="btn light-green darken-4 white-text tooltipped" data-position="left" data-delay="50" data-tooltip="ALT + Q" type="button" name="submit" id="SubmitHeader" onclick="submitHeader()">Siguiente</button>
+        </div>
+    </div>
+    <form action="<?php
+    switch ($tpo) {
+        case 'ORDVTA':
+            $url = 'cabeceraOV.php';
+            break;
+        case 'CTZN':
+            $url = 'CabeceraCotizacion.php';
+            break;
+    }
+    echo $url;
+    ?>"	method="post" name="FormCabecera" id="FormCabecera" novalidate="novalidate">
+        <div class="row">
+            <h5 class="light-blue darken-4 h5Form">
+                <i class="material-icons left h5Formi">perm_identity</i>
+                Información de Clientes
+            </h5>
+            <br>
+            <div class="input-field col l2 m2 s2">
+                <label for="claveclte">Código ó Nombre de Cliente</label> 
+                <input	class="formResizeInput" type="text" name="claveclte" id="claveclte" required="" aria-required="true">
+            </div>
+            <div class="input-field col l4 m4 s12">
+                <label for="cliente">Nombre de Entrega</label> 
+                <input class="formResizeInput dirsClte" id="cliente" type="text" name="cliente" class="dropdown-button DirCliente" data-activates="dropdownDirecciones" required="" aria-required="true">
+            </div>
+            <div class="input-field col l2">
+                <label for="condiEntrega" id="lblcondiEntrega">Condiciones de Entrega</label> 
+                <input class="formResizeInput" id="condiEntrega" type="text" name="condiEntrega" readonly required="" aria-required="true" />
+            </div>
+            <div class="input-field col l3">
+                <label>Origen de venta</label> 
+                <select class="formResizeSelect" name="origenV" id="origenV" required="" aria-required="true">
+                    <option value="" selected="">Selecciona...</option>
+                        <?php for ($i = 0; $i < count($this->origenVenta); $i++) { ?>
+                        <option value="<?php echo $this->origenVenta [$i]['ORIGINID']; ?>"><?php echo $this->origenVenta [$i]['DESCRIPTION']; ?></option>
+                        <?php } ?>                                        
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col l3 m3 s12">
+                <label for="direccion">Dirección</label>
+                <input class="formResizeInput" id="direccion" type="text" name="direccion"> 
+                <input type="hidden" id="RecIdDireccion" name="RecIdDireccion" > 
+                <input type="hidden" id="CargoDesc" name="CargoDesc" > 
+                <input type="hidden" id="ctaBanco" name="ctaBanco" > 
+                <input type="hidden" name="documentType" value="<?= $tpo ?>" >
+            </div>
+            <div class="input-field col l3 m3 s12">
+                <label for="comentariosCabecera">Comentarios</label> 
+                <input class="formResizeInput" id="comentariosCabecera" type="text" name="comentariosCabecera">
+            </div>
+            <div class="input-field col l3 m3 s12">
+                <label for="OrdenCliente">Orden del Cliente</label> 
+                <input class="formResizeInput" type="text" id="OrdenCliente" name="OrdenCliente" >
+            </div>
+            <div class="input-field col l3 m3 s12">
+                <label for="ReferenciaCliente">Referencia del Cliente</label> 
+                <input class="formResizeInput" type="text" id="ReferenciaCliente" name="ReferenciaCliente" >
+            </div>
+        </div>
+        <div class="row">
+            <h5 class="light-blue darken-4 h5Form">
+                <i class="material-icons left">assignment_ind</i> Administración
+            </h5>
+            <br>
+            <div class="input-field col l4">
+                <label>Secretario de Ventas</label> <select id="secretarioventa" required name="secretarioventa" style="display: block;width: 100%">
+                    <option value="">Usuario no asignado....</option>
+                </select>
+            </div>
+            <div class="input-field col l4">
+                <label>Responsable de Ventas</label> <select id="responsableventa" required name="responsableventa" style="width: 100%;display: block;">
+                    <option value="">Usuario no asignado....</option>
+                </select>
+            </div>
+            <br><br><br>
+            <div class="col l12 m12 s12 z-depth-2 red lighten-2 white-text" style="display: none" id="admonMsg">
+                <i class="material-icons">warning</i> Favor de levantar ticket, Indica a tu supervisor que no estas dado de alta como usuario de Dynamics, Vendedor o no tienes una relacion entre ambos.
+            </div>
+        </div>
+        <?php
+        $documenType = '';
+        if (isset($_POST['documentType'])) {
+            $documenType = $_POST['documentType'];
+        }
+        ?>
+        <input type="hidden" name="documenType" id="documenType"
+               value="<?= $documenType ?>"> <input type="hidden"
+               name="documentTypeOrigen" id="documentTypeOrigen"
+               value="<?= $documenType ?>">
+        <!-- Contenido que se muestra al dar click en las direcciones para su seleccion, es llenado con la llamada de AJAX-->
+        <div id="dropdownDirecciones"
+             class="dir-dropdown-content coment dirsClte">
+            <div class="row col l12 m12 s10 offset-l">
+                <h5 id="titleDirecciones">Direcciones</h5>
+                <div class="divider"></div>
+                <table id="DireccionesClte" class="striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Propósito</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="divider col l12 m12 s12"></div>
+            <div class="row col l3 m3 s6 offset-l9 offset-m9 offset-s6 "
+                 style="margin-top: 20px; margin-bottom: 10px;">
+                <a class="btn light-blue darken-4 white-text right"
+                   id="ElegirDireccion">Aceptar</a>
+            </div>
+        </div>
+        <input type="hidden" value="66.66" name="progress">
+        <div class="row" id="sdk">
+
+        </div>
+    </form>
+</div>
+
+
+<div id="modal1-hack" class="modal">
+    <div class="modal-content">
+        <img width="100%"  class="" src="" id="image-hack">
+        <p id="picture-comment">
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Cerrar</a>
+    </div>
+</div>
+
+
+
+<div class="row" id="articulosDiv" style="position: fixed; display: none;transform: translateY(0px);">
+    <div class="col l115 m12 s12 white z-depth-3" style="min-height: 400px; padding: 0;">
+        <div id="OrderLine-Header" class="light-blue darken-4 white-text">
+            <ul style="display: inline" class="">
+                <li><a class="white-text left" id="OV-Cliente"	style="margin-left: 5px; margin-top: 7px; font-size: 13px;"></a></li>
+                <li><i class="mdi-action-info left tooltipped"	id="infoCliente" data-position="right" data-delay="50" tooltip="" style="font-size: 1.5rem; margin-left: 5px;"></i></li>
+                <li>
+                    <div class="col l2 m2 s2" id="waitingDiv" style="display: none">
+                        <div class="preloader-wrapper small active">
+                            <div class="spinner-layer spinner-white-only">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>				
+                <li>
+                    <a  class="btn light-blue darken-4 white-text right" id="AgregarLinea" style="z-index:0"><i class="mdi-content-add"></i>Agregar Línea</a>
+                </li>
+                <li style="margin-right: 8px;">
+                    <select id="paytermArt" name="payterm" class="browser-default" onchange="setPayMode(this.value)">
+                        <script>
+                            var payTerm=<?php echo json_encode($this->payTerm);?>;
+                            $.each(payTerm,function (i,v){
+                                var sel='';
+                                if(v.PAYMTERMID=='CONTADO'){sel='selected=""';}
+                                document.write('<option  value="'+v.PAYMTERMID+'" '+sel+'>'+v.PAYMTERMID+' - '+v.DESCRIPTION+'</option>');
+                            });
+                        </script> 
+                    </select>
+                </li>
+                <li style="width: 143px;margin-right: 8px;">
+                    <select class="browser-default"  name="pagolineas" id="pagolineas">
+                        <?php for ($i = 0; $i < count($this->cargos); $i++) {
+                            if ($this->cargos[$i]['PaymMode'] != '04') { ?>
+                                <option value="<?php echo $this->cargos[$i]['STF_PercentageCharges']; ?>" data-paymmode="<?php echo $this->cargos[$i]['PaymMode']; ?>"><?php echo $this->cargos[$i]['NAME'] ?></option>
+                            <?php } else { ?>
+                                <optgroup label="TARJETA DE CREDITO" class="disabled">
+                                    <option value="<?php echo $this->cargos[$i]['STF_PercentageCharges']; ?>" data-paymmode="<?php echo $this->cargos[$i]['PaymMode']; ?>"><?php echo trim($this->cargos[$i]['NAME']); ?></option>
+                                    <!-- <option value="4.12" data-paymmode="<?php echo $this->cargos[$i]['PaymMode']; ?>">TARJETA CREDITO (3 MESES)</option> -->
+                                    <option value="7.16" data-paymmode="<?php echo $this->cargos[$i]['PaymMode']; ?>">TARJETA CREDITO (6 MESES)</option>
+                                    <!-- <option value="10.16" data-paymmode="<?php echo $this->cargos[$i]['PaymMode']; ?>">TARJETA CREDITO (9 MESES)</option> -->
+                                    <option value="13.11" data-paymmode="<?php echo $this->cargos[$i]['PaymMode']; ?>">TARJETA CREDITO (12 MESES)</option>
+                                </optgroup>
+                                    <?php } 
+                            } ?>
+                    </select>
+                </li>
+                <li>
+                    <select class="right browser-default white-text" style="width: 100px; height: 35px; border: none; font-size: 13px;" name="monedalineas" id="monedalineas">
+                        <option value="MXN" selected>MXN</option><option value="USD">USD</option>
+                    </select>
+                </li>
+                <li>
+                    <select class="right browser-default white-text" style="width: 150px; height: 35px; border: none; font-size: 13px;" name="entregalineas" id="entregalineas" onchange="setDomicilios(this.value)">
+                        <?php for ($i = 0; $i < count($this->modosentrega); $i ++) { ?>
+                            <option value="<?php echo $this->modosentrega[$i]['CODE']; ?>"><?php echo $this->modosentrega[$i]['TXT'] ?></option>
+                        <?php } ?>
+                    </select>
+                </li>
+                <li >
+                    <select class="right browser-default white-text" style="width: 100px; height: 35px; border: none; font-size: 13px;" name="sitioLineas" id="sitioLineas">
+                        <option value="">Selecciona....</option>
+                        <?php for ($i = 0; $i < count($this->sitios); $i ++) { ?>
+                            <option value="<?php echo $this->sitios[$i]['SITEID']; ?>"><?php echo $this->sitios[$i]['NAME']; ?></option>
+                        <?php } ?>
+                    </select> 
+                </li>
+                <li ><a class=" btn white-text right shortcut-bottom" id="QuitarLinea" data-shortcut="Ctrl + supr">
+                        <i class="mdi-content-remove"></i>Quitar Línea</a>
+                </li>
+                <li><div id="loadNext"></div></li>
+            </ul>
+        </div>
+        <br />
+        <form action="resumenTest.php" method="post" name="FormArticulos" id="FormArticulos">
+            <div class="row" style="overflow: auto;" id="rowResumenPartidas">
+                <style> #articulos {background-color: White;}</style>
+                <table class="striped" id="articulos">
+                    <thead>
+                        <tr>
+                            <th class="center-align">
+                                <input type="checkbox" id="selecttodo" />
+                                <label for="selecttodo" onclick="selectAll();">Todos</label>
+                                #</th>
+                            <th>Código de Artículo</th>
+                            <th>Nombre del Producto</th>
+                            <th>Cantidad</th>
+                            <th>Unidad</th>
+                            <th>Sitio</th>
+                            <th>Almacén</th>
+                            <th>Número de Lote</th>
+                            <th>Localidad</th>
+                            <th style="text-align: right !important;">Precio de Cargo</th>
+                            <th style="text-align: right !important;">Precio con IVA</th>
+                            <th style="text-align: right !important;">Monto con Cargo</th>
+                            <th style="text-align: right !important;">Monto con IVA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+                <input type="hidden" name="clte" id="clte" value="" /> 
+                <input type="hidden" name="sitioclte" id="sitioclte" value="" /> 
+                <input type="hidden" name="NumFilas" id="NumFilas" /> 
+                <input type="hidden" name="PorcentCargo" id="PorcentCargo" value="" /> 
+                <input type="hidden" name="DocumentId" id="DocumentId" /> 
+                <input type="hidden" name="cabeceraOriginal" id="cabeceraOriginal" /> 
+                <input type="hidden" name="FormaPagoLineas" id="FormaPagoLineas" /> 
+                <input type="hidden" name="DocumentType" id="DocumentType" /> 
+                <input type="hidden" name="LineasEntrega" id="LineasEntrega" />
+            </div>
+            <div class="row divInfo" style="float: right; margin-right: 30px;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td id="totals">Subtotal</td>
+                            <td class="right-align" style="text-align: right !important;" id="subtotal">0</td>
+                        </tr>
+                        <tr>
+                            <td id="totals">I.V.A</td>
+                            <td class="right-align" style="text-align: right !important;" id="iva">0</td>
+                        </tr>
+                        <tr>
+                            <td id="totals">Total</td>
+                            <td class="right-align" style="text-align: right !important;" id="total">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="progress" style="margin-bottom: -6%;">
+                    <div class="determinate" id="limitedecredito"></div>
+                </div>
+                <label style="font-size: 9px;"><b>Limite de credito consumido</b></label>
+            </div>
+            <!--////////////////begin modal 1/////////////////////////////////////////-->
+            <div id="modal1" class="modal modal-fixed-footer">
+                <div class="modal-content" id="modalexistenciasss">
+                    <div class="row">
+                        <div class="col l6">
+                            <h5 class="col l6">Existencias</h5>
+                            <div class="preloader-wrapper small active"	id="preloaderExistencias" hidden>
+                                <div class="spinner-layer spinner-green-only">
+                                    <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="gap-patch">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col l6" style="text-align: right" id="divLotesVencidos" hidden>
+                            <span style="background-color: #F79F81; padding: 1em">Contiene Lotes Caducos</span>
+                        </div>
+                    </div>
+                    <div class="col s12">
+                        <ul class="tabs">
+                            <li class="tab col s3"><a class="active" href="#test1" onclick="tab1Click();">Sitio Cliente</a></li>
+                            <li class="tab col s3"><a href="#test2" onclick="tab2Click();">Todos los Sitios</a></li>
+                        </ul>
+                    </div>
+                    <div id="test1" class="col s12">
+                        <br />
+                        <table id="ExistenciasSitioClte">
+                            <thead>
+                            <th>Sitio</th>
+                            <th>Almacén</th>
+                            <th>Existencia</th>
+                            <th>Cantidad</th>
+                            <th></th>
+                            <th style="width: 15%">Negar?</th>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot></tfoot>
+                        </table>
+                    </div>
+                    <div id="test2" class="col s12">
+                        <br />
+                        <table id="ExistenciasTodosSitios">
+                            <thead>
+                            <th>Sitio</th>
+                            <th>Almacén</th>
+                            <th>Existencia</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div id="downBtn" class="fixed-action-btn horizontal click-to-toggle" style="margin-bottom: 3em;display: none;">
+                        <a class="btn-floating btn-large waves-effect waves-light grey" onclick="bajar('#modalexistenciasss')"><i class="material-icons">arrow_downward</i></a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="edicionExis" id="edicionExis" value="">
+                    <input type="hidden" id="cancExistLinea" value="">
+                    <a class="btn-flat white-text blue" id="EnviarExistencias" onclick="">Aceptar</a>
+                    <a class="btn-flat" id="CancelarExistencias" onclick="">Cancelar</a>
+                </div>
+            </div>
+            <!--////////////////end modal1////////////////////////////////////////////-->
+            <!--////////////////begin modal 2/////////////////////////////////////////-->
+            <div id="modal2" class="modal modal-fixed-footer" style="z-index: 9999999;">
+                <div class="modal-content">
+                    <h5>Control de Pedacería</h5>
+                    <p>Existe inventario en Fraccionado, ¿Desea utilizar éste lote?</p>
+                    <br>
+                    <div class="divider"></div>
+                    <div class="row">
+                        <table id="ExistenciaFraccionado">
+                            <thead>
+                            <th>Código Artículo</th>
+                            <th>Descripcion de Artículo</th>
+                            <th>Almacén</th>
+                            <th>Descripción</th>
+                            <th>Física Disponible</th>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row col l4 offset-l8">
+                        <a class="btn modal-close modal-action offset-l4 col l4 red lighten-2 white-text" onclick="javascript:$('#modal2').closeModal();$('#lean-overlay').remove();$('.lean-overlay').remove();">Cancelar</a>
+                        <a class="btn col l4 light-blue darken-4 white-text" style="margin-right: 30px;" id="AceptarFraccionado">Aceptar</a>
+                    </div>
+                    <input type="hidden" id="fila" value="" />
+                </div>
+            </div>
+            <!--////////////////end modal 2///////////////////////////////////////////-->
+            <!--////////////////begin modal sitioencabezadomodal//////////////////////-->
+            <div id="SitioEncabezadoModal" class="modal modal-fixed-footer"
+                 style="z-index: 9999999;">
+                <div class="modal-content">
+                    <h5>Actualizar Sitio</h5>
+                    <p>El sitio es distinto al del encabezado, ¿Desea actualizar el	encabezado?</p>
+                </div>
+                <div class="modal-footer">
+                    <div class="row col l8 offset-l4">
+                        <a
+                            class="btn modal-close modal-action col l4 red lighten-2 white-text">Cancelar</a>
+                        <a
+                            class="btn modal-close modal-action col l4 light-blue darken-4 white-text"
+                            style="margin-right: 30px;" id="AceptarActualizarEncabezado">Aceptar</a>
+                    </div>
+
+                </div>
+            </div>
+            <!--////////////////begin modal sitioencabezadomodal//////////////////////-->
+            <!--////////////////begin modal existenciafamiliamodal////////////////////-->
+            <div id="ExistenciaFamiliaModal" class="modal modal-fixed-footer"
+                 style="z-index: 9999999;">
+                <div class="modal-content">
+                    <div class="row">
+                        <h5>Existencia por Familia</h5>
+                        <div class="input-field col l8 m8 s12">
+                            <input type="text" class="col l6 m6 s6" id="familia"> 
+                            <label for="familia" class="">Buscar</label> 
+                            <a  class="btn col l2 m2 s4"   style="line-height: 44px; height: 44px;" id="BuscarFamilia" onclick="buscarFamilia();">
+                                <i class="mdi-action-search"></i>
+                            </a>
+                        </div>
+                        <br><br><br><br>
+                        <div class="divider"></div>
+                        <table id="ExistenciaFamilia">
+                            <thead>
+                            <th>Código Artículo</th>
+                            <th>Descripcion de Artículo</th>
+                            <th>Almacén</th>
+                            <th>Física Disponible</th>
+                            <th>Agregar</th>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row col l4 offset-l8">
+                        <a class="btn modal-close modal-action offset-l2 col l6 red lighten-2 white-text" id="agregarItemsFamilia">Cerrar</a>
+                    </div>
+
+                </div>
+            </div>
+            <!--////////////////end modal existenciafamiliamodal//////////////////////-->
+            <!--////////////////modal para ultimas ventas/////////////////////////////-->
+            <div id="UltimasVentasModal" class="modal modal-fixed-footer" style="z-index: 9999999;">
+                <div class="modal-content">
+                    <div class="row">
+                        <div class="col l12 m12 s12">
+                            <div class="col l10 m10 s10">
+                                <h5>Ultimas Ventas</h5>
+                            </div>
+                            <div class="col l2 m2 s2" id="waitingDivModalUV"
+                                 style="display: none">
+                                <div class="preloader-wrapper small active">
+                                    <div class="spinner-layer spinner-blue-only">
+                                        <div class="circle-clipper left">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="gap-patch">
+                                            <div class="circle"></div>
+                                        </div>
+                                        <div class="circle-clipper right">
+                                            <div class="circle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <table id="UltimasVentas">
+                            <thead>
+                            <th></th>
+                            <th>Orden de Venta</th>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Nombre de Cliente</th>
+                            <th>Vendedor</th>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row col l4 offset-l8">
+                        <a class="btn offset-l2 col l6 red lighten-2 white-text"
+                           id="btnAgregarDetVta">Cerrar</a>
+                    </div>
+                </div>
+            </div>
+            <!--////////////////end modal ultimas ventas//////////////////////////////-->
+
+    </div>
+    <div class="row" id="EnviarForm">
+        <button class="btn col l3 m3 s10 offset-l8 offset-m6 offset-s1 light-blue darken-4 white-text"	type="button" name="action" id="actionArticulos">Siguiente</button>
+    </div>
+</form>
+</div>
+<div class="row" id="resumenTest" style="display: none;">
+    <div class="col l8 m10 s10 offset-l2 white z-depth-3" style="min-height: 400px; padding: 0;">
+        <div id="OrderLine-Header" class="light-blue darken-4 white-text" style="height: 70px; line-height: 70px;">
+            <ul style="display: inline" class="">
+                <li><p style="font-size: 40px; color: white" class="center" id="resumenDivTitle">Resumen de la <?php if ($tpo === 'ORDVTA') {
+    echo 'Orden de Venta: ';
+} else {
+    echo 'Cotización: ';
+} ?></p></li>
+            </ul>
+        </div>
+        <div class="row">
+            <br />
+            <div clasS="col l12">
+                <p class="right" id="Remision"	style="font-size: 30px; font-weight: bolder;"></p>
+                <p class="right" id="DescRemision" style="margin-right: 5px; font-size: 30px;">Remision:</p>
+            </div>
+
+            <div class="col l12">
+                <p id="cuentaCompleto" style="font-weight: bold; color: #5473ba; font-size: 20px;"></p>
+                <p id="cuentaCompletoOV" style="font-weight: bold; color: #5473ba; font-size: 20px;"></p>
+            </div>
+
+            <div class="col l2">
+                <p>Clave Cliente:</p>
+                <p>Nombre Cliente:</p>
+                <p id="tipoDocument"><?php
+if ($tpo === 'ORDVTA') {
+    echo 'Orden de Venta: ' . $this->NumFilas;
+} elseif ($tpo === 'CTZN') {
+    echo 'Cotización: ';
+}
+?></p>
+                <p>Moneda:</p>
+                <p>Vendedor:</p>
+            </div>
+            <div class="col l4">
+                <p id="claveclteResumen"></p>
+                <p id="desccliente"></p>
+                <p id="DocumentIdResumen" style="color: green; font-weight: bolder;"></p>
+                <p id="monedaResumen"></p>
+                <p id="vendedor"></p>
+            </div>
+            <div class="col l2">
+                <p>Tipo de Pago:</p>
+                <p>Modo de Entrega:</p>
+                <p>Dirección:</p>
+            </div>
+            <div class="col l4">
+                <p id="cargodesc"></p>
+                <p id="modoentregaResumen"></p>
+                <p id="direccionclte"></p>
+            </div>
+            <input type="hidden" id="DocumentoConfirmado" /> 
+            <input type="hidden" id="OrdenVentaRem" /> <input type="hidden" id="ATP_Cot" />
+        </div>
+        <div class="row">
+            <div class="col l6 m6 s6">
+                <p style="font-size: 20px;">Artículos</p>
+            </div>
+            <div class="col l6 m6 s6">
+                <div class="col l6 m6 s6 right">
+                    <p>
+                        <button class="right btn" onclick="refreshLines();"
+                                style="font-size: 12px;">Refrescar lineas</button>
+                    </p>
+                </div>
+                <div class="col l6 m6 s6" id="generaEti" style="display: none;">
+                    <script> sitios2 =<?php print_r($this->sitio) ?>;</script>
+                    <p>
+                        <button class="right btn" onclick="mostrarModalEti();" style="font-size: 12px;">Generar Etiquetas</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="row">
+            <div class="col l12">
+                <table id="resumenTestTablaLineas" class="table"
+                       style="color: black">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Artículo</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Unidad</th>
+                            <th>Sitio</th>
+                            <th>Almacén</th>
+                            <th>Monto con Cargo</th>
+                            <th>Monto con IVA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+                <div class="col l4 offset-l8">
+                    <div class="divider"></div>
+                    <p class="right" style="font-weight: bold;; margin-right: 40px;"
+                       id="totalResumen"></p>
+                    <p class="right" style="font-weight: bold;; margin-right: 100px;">Total</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-panel orange darken-3" id="alertaCredito"
+             style="display: none">
+            <i class="material-icons right" id="iconWait" style="display: none">warning</i><i
+                class="material-icons right" id="iconSuccess" style="display: none">thumb_up</i>
+            <h5 class="off" id="alertMsj">La venta tiene un proceso de
+                autorización de credito pendiente.</h5>
+            <span class="off" id="alertMsjDet">Se espera autorización de
+                crédito... En proceso</span>
+            <h5 class="off" id="alertMsjSuccess">El proceso ha sido liberado.
+                Puede continuar con la Remisión</h5>
+        </div>
+        <div class="card-panel orange darken-3" id="alertaBloqueo"
+             style="display: none">
+            <i class="material-icons right" id="iconWaitBloq"
+               style="display: none">warning</i><i class="material-icons right"
+               id="iconSuccessBloq" style="display: none">thumb_up</i>
+            <h5 class="off" id="alertMsjBloq">La venta tiene un proceso de
+                autorización de bloqueo pendiente.</h5>
+            <span class="off" id="alertMsjDetBloq">Se espera liberacion de
+                bloqueo... En proceso</span>
+            <h5 class="off" id="alertMsjSuccessBloq">El proceso ha sido liberado.
+                Puede continuar con la Remisión</h5>
+        </div>
+        <div class="row">
+            <br>
+            <br>
+            <br>
+            <br>
+            <p id="msj_limite"></p>
+            <div class="divider"></div>
+            <br>
+            <div class="col l2 s2 m2">
+                <a href="index" class="btn light-blue darken-4"><i
+                        class="mdi-action-home left"></i>Inicio</a>
+            </div>
+            <div class="col l2 s2 m2">
+                <button type="button" class="btn light-blue darken-4" onclick="nuevoDocumento();" style="font-size: 12px;">
+                    <i class="material-icons left">replay</i>Nuevo
+                </button>
+            </div>
+            <div class="col l3 s3 m3">
+                <form action="impresion-cotizacion" method="post" target="_blank">
+                    <input type="hidden" id="QuotationId" name="QuotationId" value="">
+                    <input type="hidden" id="CountCotizacion" name="CountCotizacion" value="1"> 
+                    <input type="hidden" id="comentarioCabeceraCOT" name="comentarioCabeceraCOT"> 
+                    <input type="hidden" id="ordenClteCOT" name="ordenClteCOT"> 
+                    <input type="hidden" id="refClteCOT" name="refClteCOT">
+                    <button class="btn brown darken-4" type="submit" id="ImprimirCotizacion" style="font-size: 12px;"><i class="material-icons right"></i>Imprimir Cotización</button>
+                </form>
+                <form action="impresion" method="POST"	id="formImp" name="formImp" target="_blank">
+                    <input type="hidden" id="PackingSlipId2PDF" name="PackingSlipId"> 
+                    <button class="btn brown darken-4" type="submit" id="ImprimirREM"> 
+                        <i class="material-icons right"></i>Imprimir Remisión
+                    </button>
+                </form>
+            </div>
+            <div class="col l3 s3 m3">
+                <a class="btn light-blue darken-4" id="confirmarDocumento" onclick="confirmarCot('<?php print_r($_SESSION['edicion']); ?>', '<?php echo $tpo; ?>');" style="font-size: 12px;"><i class="material-icons right"></i>Confirmar 
+                <?php
+                if ($tpo === 'ORDVTA') {
+                    echo 'Orden';
+                } elseif ($tpo === 'CTZN') {
+                    echo 'Cotización';
+                }
+                ?></a>
+                <a class="btn deep-orange" id="GenerarREM" style="width: 130%; font-size: 12px;"><i class="material-icons right"></i>Generar Remisión</a>
+                <a class="btn deep-orange" id="Facturar" style="width: 130%; font-size: 12px; display:none;"><i class="material-icons right"></i>Facturar</a>
+                <div class="preloader-wrapper small active" id="preloaderRemision" style="position: absolute !important; margin-left: 5px; display: none">
+                    <div class="spinner-layer spinner-green-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+                <a class="btn deep-orange col l12" id="ConvertirCot-Ov"	style="width: 130%; font-size: 12px;"><i class="material-icons right"></i>Convertir a Orden de Venta</a>
+                    <div class="preloader-wrapper small active" id="preloaderConv" style="position: absolute !important; margin-left: 5px; display: none">
+                        <div class="spinner-layer spinner-green-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>                    
+                <div class="col l2 m2 s2">
+                    <div class="preloader-wrapper small active" id="preloaderRemi"
+                         style="position: absolute !important; margin-left: -15px; display: none;">
+                        <div class="spinner-layer spinner-green-only">
+                            <div class="circle-clipper left">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="gap-patch">
+                                <div class="circle"></div>
+                            </div>
+                            <div class="circle-clipper right">
+                                <div class="circle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="contenedorImgLogo" hidden><img src="../application/assets/img/vlogo-66x66.jpg" style="width: 100%; display: block; margin: 0 auto;"></div>
+<div id="contenedorCodigo" hidden><svg id="remiTemp"></svg></div>
+<!--/////////////context menu ////////////-->
+<div id="rightclicked" style="border: solid 1px #888; background-color: #FFFFFF; z-index: 100000; width: 150px; height: auto; position: absolute; display: none;">
+    <ul class="nav contextMenu" style="margin: 0px; padding: 0px; text-align: center; list-style-type: none; text-indent: 0px">
+        <li style="margin: 5px 0 5px 0; font-size: 12px;" class="contextMenuList">
+            <a class="contextMenuA" href="ultimasVentas();"	title="Click ver las ultimas ventas" style="padding: 3px 15px">Ver ultimas ventas</a>
+        </li>
+    </ul>
+</div>
+<!--/////////////end context menu//////////////-->
+<div id="modalFactura" class="modal lighten-3">
+    <div class="modal-content">
+        <h4>Facturar </h4>       
+        <div class="row">
+            <div class="col l12">
+                <label>Uso de CFDI:</label>
+                <select id="usoCFDI" name="usoCfdi" class="browser-default">
+                    <script>
+                        var usoCFDI=<?php echo json_encode($this->usoCFDI);?>;
+                        $.each(usoCFDI,function (i,v){
+                            document.write('<option value="'+v.CFDIUSECODE+'">'+v.CFDIUSECODE+' - '+v.DESCRIPTION+'</option>');
+                        });
+                    </script>                    
+                </select>
+            </div> 
+            <div class="col l12">
+                <label>Dirección de facturación</label>
+                <select id="direccionF" name="direccion" class="browser-default"></select>
+            </div>
+        </div>        
+    </div>
+    <div class="modal-footer" id="footerFactura">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat white-text red">Cerrar</a>
+      <a id="btnFacturar" onclick="facturar()" class="waves-effect light-green darken-4 white-text btn-flat" style="margin-right: 13px;">Facturar</a>
+      <span id="loadFacturaSt" style="float: right; margin-right: 30px;margin-top: 13px;"></span>
+    </div>
+</div>
+<!-- Inician: Notificaciones -->
+<div id="modalLimiteCredito" class="modal grey lighten-3" style="width: 50%">
+    <div class="modal-content" style="border: solid 2px #eee">
+        <div style="text-align: center">
+            <h4>Límite de crédito excedido</h4>
+            <a class="waves-effect waves-light btn" onclick="modalLimiteCreditoClose();">Cerrar Mensaje</a>
+        </div>
+    </div>
+</div>
+
+<!-- Termina: Notificaciones -->
+<!-- MODL DE IMAGENES -->
+<div id="imageModal" class="modal">
+    <div class="modal-header">
+        <label style="font-size: 2em; color: #474848;">Galeria de imagenes de artículo: </label><label id="imgArt" style="font-size: 2em;color: #474848;font-weight: bold;"></label>
+        <a href="#" class="modal-action modal-close waves-effect waves-green btn red darken-4 right ">Cerrar</a>
+    </div>
+    <div class="modal-content" style="min-height: 350px;">
+        <div id="imageContent"></div>
+    </div>
+</div>
+<img id="imageHeader" style="display: none;z-index: 1000;" src="" class="materialboxed">
+<!--///////////////form para el nuevo documento////////////////////////////-->
+<form action="inicio" method="POST" id="newDocument">
+    <input type="hidden" name="documentType" id="documentType" value="" />
+</form>
+<!--///////////////form para editar documento//////////////////////////////-->
+<form action="inicio" method="POST" id="editarCotForm">
+    <input type="hidden" id="documentType" name="documentType" value="" />
+    <input type="hidden" id="DocumentId" name="DocumentId" value="" /> 
+    <input type="hidden" id="cliente" name="cliente" value="" /> 
+    <input type="hidden" id="editar" name="editar" value="" />
+</form>
+<input type="hidden" id="seguridad3Digitos" value="0000">
+<input type="hidden" id="DocumentId2" value="">
+<!--///////////////form para imprimir remision//////////////////////////////-->
+<form id="testForm" action="impresion-cotizacion2pdf/test" target="_blank" method="post" style="display: none;">
+    <input type="text" name="inputHtml" id="inputHtml" /> 
+    <input type="text" name="remision" id="remision" />
+</form>
+<!-- modal diaro de pago -->
+<div class="modal" id="diarioPago">
+    <div class="modal-header">
+        <h4>Diario <span id="process"></span> </h4> 
+    </div>
+    <div class="modal-body" >
+        <form id="diarioPagoForm">
+            <div class="row">
+                <div class="col l4">
+                    <label>Número de diario:</label>
+                    <input name="" id="folioDiario" readonly="">
+                </div>
+                <div class="col l2">
+                    <label>Factura</label>
+                    <input id="diarioFacturaFolio" type="text" name="factura"  readonly="" value="">
+                </div>                                       
+                <div class="col l5">
+                    <label>Descripción:</label>
+                    <input name="descripcion" value="<?= $this->fechaActual ?> Cobros <?= $this->sucursalActual[0][0] ?>" readonly="">
+                </div>
+            </div>
+            <hr>
+            <h4>Lineas</h4>
+            <div class="row">            
+                <div class="col l2">
+                    <label>Fecha</label>
+                    <input type="text" name="fecha" value="<?= $this->fechaActual ?>">
+                </div>                
+                <div class="col l2">
+                    <label>Crédito</label>
+                    <input id="diarioMontoFactura" type="number"  min="0" name="diarioMontoFactura" value="">
+                </div>
+                <div class="col l2">
+                    <label>Nombre:</label>
+                    <select name="contrapartida" id="contraPartida" class="browser-default"><option></option></select>
+                </div> 
+                <div class="col l3">
+                    <label>Cuenta de contrapartida</label>
+                    <select id="diarioCuentaContra" name="diarioCuentaContra" class="browser-default"></select>
+                </div>
+                <div class="col l3">
+                    <label>Tipo de Pago:</label>
+                    <select id="diarioFPago" name="diarioFPago" class="browser-default" onchange="diarioFormaPago(this.value)"></select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <a class="waves-effect waves-green btn-flat white-text red" onclick="$('#diarioPago').closeModal();">Cerrar</a>
+        <a id="diarioGuardarBtn" onclick="crearDiario()" class="waves-effect light-green darken-4 white-text btn-flat" style="margin-right: 13px;">Guardar</a>
+        <span id="loadFacturaSt" style="float: right; margin-right: 30px;margin-top: 13px;"></span>
+    </div>
+    <div></div>
+</div>
+<!--///////////////////////////////////////////////////////////////////////-->
+<input type="hidden" id="F2pressed" value="" />
+<script src="<?= JAVASCRIPT_PATH ?>/views/inicio.js?v=<?php echo date("h"); ?>4" type="text/javascript"></script>
+<script>    
+    
+        payTerm=<?php echo json_encode($this->payTerm);?>;
+        payTermClte="<?php if (isset($_POST['PAYMENT'])) { print_r($_POST['PAYMENT']);} ?>";
+        itemsNotLocked = <?php print_r($this->artNotLocked); ?>;
+        lineasArr = <?php if ($this->editarOV == 'NoResults') { print_r("'$this->editarOV'");} else { print_r($this->editarOV);} ?>;
+        cliente = '<?php if (isset($_POST['cliente'])) { print_r($_POST['cliente']);} ?>';
+        totalDiario=0;
+        dlvmode = '<?php if (isset($_POST['DLVMODE'])) { print_r($_POST['DLVMODE']);} ?>';
+        dlvterm = '<?php if (isset($_POST['DLVTERM'])) { print_r($_POST['DLVTERM']);} ?>';
+        sitio = '<?php if (isset($_POST['INVENTSITEID'])) { print_r($_POST['INVENTSITEID']);} ?>';
+        almacen = '<?php if (isset($_POST['INVENTLOCATIONID'])) {print_r($_POST['INVENTLOCATIONID']);} ?>';
+        moneda = '<?php if (isset($_POST['CURRENCYCODE'])) { print_r($_POST['CURRENCYCODE']);} ?>';
+        ctaBanco = '<?php print_r(filter_input(INPUT_POST, 'BANKACCOUNT')); ?>';
+        secretarioventa = '<?php if (isset($_POST['WORKERSALESTAKER'])) { print_r($_POST['WORKERSALESTAKER']);} ?>';
+        responsableventa = '<?php if (isset($_POST['WORKERSALESRESPONSIBLE'])) {print_r($_POST['WORKERSALESRESPONSIBLE']);} ?>';
+        comentariosCabe = '<?php if (isset($_POST['STF_OBSERVATIONS'])) {print_r($_POST['STF_OBSERVATIONS']);} ?>';
+        referenciaCabe = '<?php if (isset($_POST['CUSTOMERREF'])) {print_r($_POST['CUSTOMERREF']);} ?>';
+        ordenCabe = '<?php if (isset($_POST['CUSTPURCHASEORDER'])) {print_r($_POST['CUSTPURCHASEORDER']);} ?>';
+        clients = [];
+        items = [];
+        usuario = '<?php echo $_SESSION['userInax']; ?>';
+        edicion = '<?php print_r($_SESSION['edicion']); ?>';
+        setTipo = '<?php echo $tpo; ?>';
+        docID = '<?php print_r($_POST['DocumentId']); ?>';
+        editarOV = <?php print_r("'$this->editarOV'") ?>;
+        cargarItems(<?php print_r($this->art); ?>,<?php print_r($this->art2); ?>);
+        var F2pressed = '0';
+        var cabeceraOn = 0;
+        var resultNumFilas = 0;
+        var lineaXML = '';
+        var familiaArr = [];
+        $("#claveclte").autocomplete({autoFocus: true, minLength: 3,
+            source: function (request, response) {
+                var buscar = request.term.split('*');
+                itemClte = [];
+                $(buscar).each(function (index, valor) {
+                    if (index == 0) {
+                        itemClte = mapeoClte(valor, clients, request);
+                    } else {
+                        itemClte = mapeoClte(valor, itemClte, request);
+                    }
+                });
+                response(itemClte);
+            },
+            response: function (event, ui) {
+                if (ui.content.length === 0) {
+                    ui.content.push({label: "No hay Resultados", value: " "});
+                }
+            },
+            select: function (event, ui) {
+                var claveclte = ui.item.value;
+                $.ajax({url: "inicio/cliente", type: "post", dataType: "json", data: {'cliente': claveclte},
+                    success: function (data) {
+                        getDirecciones(claveclte); 
+                        //Se verifica el limite de credito del cliente seleccionado, en caso de bloqueo no permite continuar
+                        if (data.Bloqueo === "Todo") {
+                            ui.item.value = "";
+                            Materialize.toast('El cliente está bloqueado!.', 7000, 'red');
+                            $("#sitioLineas option:eq(0)").attr('selected', 'selected');
+                            $("#almacenes option:eq(0)").attr('selected', 'selected');
+                            $("#sitioLineas").trigger('change');
+                        } else {
+                            if (data.Bloqueo === 'Factura') {
+                                Materialize.toast('El cliente está bloqueado para Facturacion!.', 7000, 'red');
+                            }
+                            //En caso de que no sea bloqueado se presentan los datos del cliente en el formulario
+                            $("#cliente").val(data[0].Nombre);
+                            $("#direccion").val(data[0].Direccion);
+                            $('#RecIdDireccion').val(data[0].RecIdDireccion);
+                            $("#condiEntrega").val(data[0].CondEntrega);
+                            /////asigna el valor del select cargo 
+                            if (edicion != '1') {
+                                paymmodedoc =data[0].MetodoPago;
+                                if(data[0].ModoEntrega!==''){ $('#entregalineas').val(data[0].ModoEntrega);}
+                                else{$('#entregalineas').val('PASA');}
+                                $("#sitioLineas").val(data[0].Sitio);
+                                payTermClte=data[0].PAYMTERMID;
+                            }
+                            else{
+                                $('#condiEntrega').val(dlvterm);
+                                $('#comentariosCabecera').val(comentariosCabe);
+                                $('#ReferenciaCliente').val(referenciaCabe);
+                                $('#OrdenCliente').val(ordenCabe);
+                                $('#sitioLineas').val(sitio);
+                                $('#almacenes').val(almacen);
+                                $('#monedalineas').val(moneda);
+                                $('#secretarioventa').val(secretarioventa);
+                                $('#responsableventa').val(responsableventa);
+                                $("#entregalineas").val(dlvmode);
+                            }
+                            
+                        }   
+                        $("#paytermArt").val(payTermClte);
+                        scrollinDropdown();
+                        primeraVez = false;
+                        if (data[0].CondEntrega === 'CREDITO') {
+                            $('#pagolineas option').val('0.00');
+                        }
+                        $('#cliente').focus();
+                    },
+                    error: function (jqXHR, exep) {
+                        Materialize.toast('Error!' + catchError(jqXHR, exep), 3000);
+                    }
+                });
+            }
+        });
+//Activa la captura de atajos
+        shortcuts();
+        cargarClientes(<?= $this->cliente ?>);
+        cargarUsuarios(<?= json_encode($_SESSION['usuarios']) ?>);
+////////////////////////////////////////////////////////////////////////////////////////
+
+</script>

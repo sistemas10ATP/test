@@ -1,0 +1,50 @@
+<html>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <?php
+          echo $this->headTitle();
+          echo $this->headLink();
+          ?>
+    <style>
+        body {
+            background: linear-gradient(to right, #3ac0ee , #0a4c91);
+            background-size: cover;
+        }
+    </style>
+    <body class="blue-grey">
+        <div class="container">
+            <div class="row" id="login-panel">
+                <div class="card col l8 offset-l2 z-depth-4">
+                    <div class="row" style="text-align: center;">
+                        <br> <img src="<?= IMAGES_PATH ?>/logo_inax.png" style="margin-top: 20px"> <br>
+                        <br>
+                    </div>
+                    <form action="logincedis" method="post">
+                        <div class="row">
+                            <div class="input-field col l10 offset-l1">
+                                <i class="mdi-action-account-circle prefix"></i> 
+                                <input id="icon_prefix" type="text" name="userLogin" class="validate">
+                                <label for="icon_prefix">Usuario</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col l10 offset-l1">
+                                <i class="mdi-action-lock prefix"></i> 
+                                <input id="password"type="password" name="userPassword" class="validate"> 
+                                <label for="password">Contraseña</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <?php if ($this->error == 1) echo '<p class="center-align offset-l1 col l10" style="background: #df8989; border: 1px solid #ca3838; color: #7b2121;">Usuario y/o Contraseña Incorrectos</p>'; ?>
+                            <?php if ($this->error == 4) echo '<p class="center-align offset-l1 col l10" style="background: #df8989; border: 1px solid #ca3838; color: #7b2121;">No autorizado para iniciar sesión</p>'; ?>
+                            <div class="offset-l7 col l4">
+                                <button class="btn waves-effect waves-light light-blue darken-4" type="submit" name="action">Iniciar Sesión <i class="mdi-content-send right"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

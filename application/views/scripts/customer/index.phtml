@@ -1,0 +1,340 @@
+<script>
+    var clientes = '<?php print_r($this->getConjuntoClientes); ?>';
+    clientes = JSON.parse(clientes);
+    var monedaList;
+    var moneda = '<?php print_r(addslashes($this->getMoneda)); ?>';
+    moneda = JSON.parse(moneda);
+    var data = '<?php print_r(addslashes($this->getSitios)); ?>';
+    var propositoOptions;
+    var sitios = JSON.parse(data);
+    //zona de venta
+    var zonaVenta = '<?php print_r(addslashes($this->getZonaVenta)); ?>';
+    //proposito
+    var proposito = '<?php print_r(addslashes($this->getProposito)); ?>';
+    
+    
+</script>
+<body>
+<style>
+.collapsible-header {color: white; background-color:  #2196F3;}
+.nav-wrapper {text-align: left;color: #01579b;height: 40px;}
+h4 {margin-left: 20px;}
+.collection a.collection-item{color: white;background-color:  #2196F3;}
+.blue-header {
+    background-color: #0d47a1 !important;
+}
+
+span[role=combobox] {
+    border-bottom: 1px solid #9e9e9e !important;
+    border-top: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+}
+
+#btnayuda {
+    margin-right: 10px;
+    margin-top: 1px;
+}
+
+ul>li>span {
+	color: #595959 !important;
+	font-size: 15px !important;
+}
+
+.espacioDerecho {
+	margin-right: 1em;
+}
+.panel{
+    margin-bottom: 3px;
+}
+</style>
+<div class="row">
+<form action="" method="POST" id="formCustomer">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="./"><i class="fa fa-home"> Home</i></a></li>
+            <li class="breadcrumb-item active"><i class="fa fa-newspaper-o bg-info"></i> Nuevo Cliente</li>
+            <button class="btn btn-success pull-right clearfix" type="submit" name="action" id="guardar"><i class="fa fa-save"></i> Guardar</button>
+            <a class="btn btn-info pull-right clearfix" data-toggle="modal" data-target="#ayuda" id="btnayuda"> <i class="fa fa-info-circle"></i> Ayuda</a>
+        </ol>
+        
+    </div>
+    <div class="col-md-12 right">
+        <div class="panel panel-primary">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#accordion1" href="#collapseOne">
+                <h4 class="panel-title"><i class="fa fa-calendar"></i>Datos Generales</h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse">
+                <div class="panel-body">
+                        <br>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="col-sm-4">
+                                        <label>Tipo De Registro</label> 
+                                        <select id="registro" name="registro" class="form-control validarOption" required>
+                                            <option value="">seleccione...</option>
+                                            <option value="1">Entidad jurídica</option>
+                                            <option value="2">Persona jurídica</option>
+                                            <option value="3">Empresa extranjera</option>
+                                        </select>
+                                    </div>
+                                    <div class=" col-sm-4">
+                                            <label>Nombre Cliente / Organización</label> 
+                                            <input type="text" placeholder="Ingrese el nombre cliente u organizacion" id="nombreCliente" name="nombreCliente" class="form-control validarInput" required>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label>RFC</label> <input type="text" placeholder="Ingrese un rfc valido" id="rfc" name="rfc" onkeyup="filterRFC(this)" class="form-control validarInput" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <br>
+                                    <div class='list-group-item list-group-item-info'>Detalles</div>
+                                    <br>
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-4  espacioDerecho">
+                                            <label>Sucursal</label><br> 
+                                            <select id="sitioVenta" name="sitioVenta" class="form-control validarOption" required>
+                                                <option value="" selected>Seleccione...</option>
+                                            </select>
+                                            </div>
+                                            <div class="col-sm-3  espacioDerecho">
+                                                <label>Conjunto De Clientes</label><br> 
+                                                <select required id="conjuntoCliente" name="conjuntoCliente" class="form-control validarOption"></select>
+                                            </div>
+                                            <div class="col-sm-4 ">
+                                                <label>Zona De Venta</label><br> 
+                                                <select id="zonaVenta" required name="zonaVenta" class="form-control validarOption">
+                                                    <option value="" disabled selected>Seleccione...</option>
+                                                </select>
+                                            </div>
+                                            <br>
+                                    </div>
+                                    <div class="col-sm-12" style="margin-top: 2em;">
+                                            <div class=" col-sm-4 espacioDerecho">
+                                                <label>Almacén</label> 
+                                                <select id="almacen" name="almacen" class="form-control" required disabled="">
+                                                    <option value="" selected>Seleccione...</option>
+                                                </select>
+                                            </div>
+                                            <div class=" col-sm-4 espacioDerecho">
+                                                    <label>Tipo De Descuento</label> 
+                                                    <select id="tipoDescuento" required name="tipoDescuento" class="form-control validarOption" disabled="">
+                                                        <option value="" selected></option>
+                                                    </select>
+                                            </div>
+                                            <div class=" col-sm-3">
+                                                    <label>Moneda</label>
+                                                    <select id="moneda" name="moneda" class="form-control validarOption" required></select>
+                                            </div>
+                                    </div>
+                            </div>
+                    </div>
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading" data-toggle="collapse" href="#collapse2">
+                <h4 class="panel-title"><i class="fa fa-map"></i>Dirección</h4>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="row">
+                       <table id="direccion" class="col-sm-12">
+                                <tr>
+                                    <td>
+                                        <div class='list-group'>
+                                            <a class='list-group-item list-group-item-info clearfix'>Dirección 1 <div class="pull-right btn btn-success" onclick="addDireccion()"><i class="fa fa-fw fa-plus-circle"></i></div></a>
+
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label>Código Postal <span id="cpimagen1"></span></label>
+                                            <input type="text" required placeholder="..." id="codigoPostal1" onchange="setDireccion(1)" name="cp[1]" class="form-control validarInput">
+                                        </div>
+                                        <div class=" col-sm-2">
+                                            <label>Estado</label> 
+                                            <input class="form-control" type="text" placeholder="" required id="estado1" name="estado[1]" readonly> 
+                                            <input id="estadoAbr1" type="hidden" value="" >
+                                        </div>
+                                        <div class=" col-sm-2">
+                                            <label>País</label> 
+                                            <input class="form-control" type="text" placeholder="" required id="pais1" name="pais[1]" readonly> 
+                                            <input id="paisAbr1" type="hidden" value="" />
+                                        </div>
+                                        <div class=" col-sm-4">
+                                            <label>Calle</label> 
+                                            <input class="form-control" type="text" required placeholder="Ingrese una calle" id="calle1" name="calle[1]" class="validarInput">
+                                        </div>
+                                        <div class=" col-sm-2">
+                                            <label>Número</label> 
+                                            <input class="form-control" type="text" required placeholder="Ingrese número" id="numero1" name="numero[1]" class="validarInput">
+                                        </div>
+                                        <div class=" col-sm-3 espacioDerecho">
+                                            <label>Ciudad</label> 
+                                            <select id="ciudad1" required  onchange="getColonia(1)" class="form-control validarOption" name="ciudad[1]">
+                                                <option value="" disabled selected>Seleccione...</option>
+                                            </select>
+                                        </div>
+                                        <div class=" col-sm-4 espacioDerecho">
+                                            <label>Colonia</label> 
+                                            <select id="colonia1" required class="form-control validarOption" name="colonia[1]">
+                                                <option value="" disabled selected>Seleccione una colonia</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label>Proposito</label> 
+                                            <select id="proposito1" class="form-control" required name="proposito[1]"></select> 
+                                        </div>
+                                     </td>
+                                </tr>
+                       </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading" data-toggle="collapse" data-parent="#accordion1" href="#collapse3">
+                <h4 class="panel-title"><i class="fa fa-address-book-o"></i>Información De Contacto</h4>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="row">
+                        <div >
+                            <table id="contacto" class="col-sm-12">
+                                <tr>
+                                    <td>
+                                        <div class='list-group-item list-group-item-info clearfix'>Contacto 1 Principal <a class="pull-right btn-success" onclick="addContacto()"><i class="material-icons">add</i></a></div>
+                                        <br>
+                                        <div class="col-sm-6">
+                                            <div class="">
+                                                <label>Nombre De Contacto</label> 
+                                                <input type="text" placeholder="Descripción de contacto" id="descripcion" name="descripcion[1]" class="form-control validarInput">
+                                            </div>
+                                            <br>
+                                            <div class="">
+                                                <label>Dirección ó Número De Contacto</label> 
+                                                <input required type="text" placeholder="Dirección ó telefono de contacto" id="telefono" name="telefono[1]" class="form-control validarInput">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="">
+                                                <label>Tipo De Contacto</label>
+                                                <select id="formaContacto" class="form-control validarOption" name="formaContacto[1]" required>
+                                                    <option value="" disabled selected>Seleccione tipo de contacto</option>
+                                                    <option value="1">Telefono</option>
+                                                    <option value="2">Email</option>
+                                                    <option value="3">URL</option>
+                                                    <option value="4">Télex</option>
+                                                    <option value="5">Fax</option>
+                                                </select>
+                                            </div>
+                                            <br>
+                                            <div class="">
+                                                <label>Extensión</label> 
+                                                <input class="form-control" type="text" placeholder="Ingrese la extensión" id="extension" name="extension[1]" disabled="true" required>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+<div class="modal fade" role="dialog" id="ayuda">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5>AYUDA</h5>
+                <p>Comportamiento del formulario.</p>
+            </div>
+        <div class="modal-body">
+            <ul class>
+                <li class="collection-item">1: En esta sección, usted puede dar de alta un nuevo <b>cliente</b></li>
+                <li class="collection-item">2: La mayoría de los campos utilizados son de selección multiple; el sistema cuenta con datos precargados (si se requiere un dato que no existe, se sugiere se comunique con <b>staff</b>).</li>
+                <li class="collection-item">3: El campo de <b>código postal</b> al completarlo, genera una acción con la que se llenan automáticamente los campos de país y estado correspondientes al código.</li>
+                <li class="collection-item">4: El campo <b>descripción</b>... Describe la forma de contacto. (Ej. La comunicación con el cliente será por correo electrónico) </li>
+                <li class="collection-item">5: El campo <b>extensión</b> solo se habilita cuando la forma de contacto es un teléfono.</li>
+                <li class="collection-item">6: Si el dato ingresado en el campo de <b>RFC</b> es incorrecto, el sistema abrirá una ventana de advertencia y le indicará el formato correcto.</li>
+		<li class="collection-item">7: Al dar click sobre el botón <b>Guardar</b> se guardará la información ingresada en el formulario creando un nuevo cliente en la base de datos.</li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+    </div>    
+</div>
+<div id="rfcModal" role="dialog" class="modal fade">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-red">
+                <h5>El RFC es incorrecto</h5>
+                <p>A continuación se muestra el formato correcto.</p>
+            </div>
+            <div class="modal-body">
+                <img class="responsive-img" src="<?= IMAGES_PATH ?>/RFC.png" alt="RFC Formato" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="exito" role="dialog" class="modal fade">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5>¡Exito!</h5>
+            </div>
+            <div class="modal-body">
+                <p>Buen trabajo, el cliente se ha guardado correctamente.</p>
+                <span id="msjexito"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="process" role="dialog" class="modal fade">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5>¡Procesando!</h5>
+            </div>
+            <div class="modal-body">
+                <p>El cliente se esta guardando...</p>
+                <span id="msjprocess"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="error" role="dialog" class="modal fade">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header bg-red">
+                  <h5>¡Error!</h5>
+            </div>
+            <div class="modal-body">
+                <p>
+                    El registro de cliente fallo, vuelva a intentarlo, si el problema
+                    persiste contacte al <b>departamento de TI</b>.
+                </p>
+                <span id="msjerror"></span>
+                <p id="detalleError"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="<?= JAVASCRIPT_PATH ?>/views/costomer.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>
+</body>

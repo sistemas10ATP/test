@@ -1,0 +1,321 @@
+<?php 
+    setlocale(LC_MONETARY, 'en_US');
+?>
+<script>
+sucursalesList=<?php echo json_encode($this->sucursalList); ?>;
+</script>
+<div class="panel panel-primary">
+    <div class="panel-heading">Totales de peticiones del <span id="periodo"><?= $this->fechaInput ?> al <?= $this->fechaInput ?></span>
+        <div class="pull-right">
+            <a id="pdfLinkUso" class="btn btn-default" style="margin-top: -7px;" href="fallasinax/uso-Inax" target="_blank"><i  style="color: #990000;" class="fa fa-file-pdf-o"></i> PDF Uso</a>
+            <a id="pdfLink" class="btn btn-default" style="margin-top: -7px;" href="fallasinax/fallas-Pdf" target="_blank"><i  style="color: #990000;" class="fa fa-file-pdf-o"></i> PDF Error</a>
+            <div class="btn-group">                
+                <input type="date" name="f1" id="f1" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filter();"> al
+                <input type="date" name="f2" id="f2" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filter();">
+            </div>
+        </div>
+  </div>  
+      <div class="panel-body">
+<div class="col-lg-3 col-md-6">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-3">
+                    <i class="fa fa-check fa-5x" style="color: green;"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                    <div class="huge" id="totalCompletado"><?php
+                            $tt=$this->totalWS['total'];
+                            $porcen=100;
+                            $te=$this->totalWSerror['total'];
+                            $tot=($te*100)/$tt;
+                            if($tot==0 & $tt==0){
+                                $tot=$porcen;
+                            }
+                            else {
+                                $tot=$porcen-$tot;
+                            } 
+                            $tt=$this->totalWSerror['total'];
+                            echo round($tot,2).'%';?></div>
+                    <div>Procesos completados</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-lg-3 col-md-6">
+    <div class="panel panel-green">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-3">
+                    <i class="fa fa-tasks fa-5x"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                    <div class="huge" id="totalPeticiones"><?php echo number_format($this->totalWS['total'],0,'.',',');?></div>
+                    <div>Total de peticiones</div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <table style="border-width: 0px; width: -webkit-fill-available;">
+                <tr><td>Precios</td><td ><label  class="pull-right" id="cPrecios"><?php echo number_format($this->totalWSPrecioComplete['total'],0,'.',',');?></label></td></tr>
+                <tr><td>Facturas</td><td ><label class="pull-right" id="cFacturas"><?php echo number_format($this->fact['total'],0,'.',',');?></label></td></tr>
+                <tr><td>Cotización</td><td><label class="pull-right" id="cConfirmaciones"><?php echo number_format($this->totalWSConfirmacionComplete['total'],0,'.',',');?></label></td></tr>
+                <tr><td>Remisiones (OV)</td><td ><label class="pull-right" id="cRemisiones"><?php echo number_format($this->totalWSRemisionComplete['total'],0,'.',',');?></label></label></td></tr>
+                <tr><td>Cot a Ov</td><td ><label class="pull-right" id="cCotToOv"><?php echo number_format($this->totalWScotovComplete['total'],0,'.',',');?></label></td></tr>
+                <tr><td>Cliente Nuevo</td><td ><label class="pull-right" id="cNewClient"><?php echo number_format($this->newClient['total'],0,'.',',');?></label></td></tr>
+                <tr><td>Impresión en PDF</td><td ><label class="pull-right" id="cPdf"><?php echo number_format($this->pdf['total'],0,'.',',');?></label></td></tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="col-lg-3 col-md-6">
+    <div class="panel panel-red">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-3">
+                    <i class="fa fa-times fa-5x"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                    <div class="huge" id="totalError"><?php echo number_format($this->totalWSerror['total'],0,'.',',');?></div>
+                    <div>Errores en procesos</div>
+                </div>                
+            </div>            
+        </div>
+        <div class="panel-footer">
+            <table style="border-width: 0px; width: -webkit-fill-available;">
+                <tr><td>Precios</td><td><label  class="pull-right" id="ePrecios" style="margin-right: 3em;"><?php echo number_format($this->totalWSprecio['total'],0,'.',',');?></label></td><td><label class="pull-right" id="ePreciosPor"><?php 
+                $te=$this->totalWSprecio['total'];
+                $tot=($te*100)/$this->totalWSPrecioComplete['total'];
+                echo round($tot,2);
+                ?>%</label></td></tr>
+                <tr><td>Facturas</td><td><label  class="pull-right" id="eFacturas" style="margin-right: 3em;"><?php echo number_format($this->efact['total'],0,'.',',');?></label></td><td><label class="pull-right" id="eFacturasPor"><?php 
+                $tot=(((integer)$this->efact['total']*100)/(integer)$this->fact['total']);
+                echo round($tot,2);
+                ?>%</label></td></tr>
+                        <tr><td>Cotización</td><td><label class="pull-right"id="eConfirmaciones" style="margin-right: 3em;"><?php echo number_format($this->totalWSconfirmacion['total'],0,'.',',');?></label></td><td>
+                                <label  class="pull-right" id="eConfirmacionesPor"><?php
+                                    $te = $this->totalWSconfirmacion['total'];
+                                    $tot = ($te * 100) / $this->totalWSConfirmacionComplete['total'];
+                                    echo round($tot, 2);
+                                    ?>%</label>
+                    </td></tr>
+                <tr><td>Remisiones (OV)</td><td><label class="pull-right" id="eRemisiones" style="margin-right: 3em;"><?php echo number_format($this->totalWSremision['total'],0,'.',',');?></label></td><td><label class="pull-right" id="eRemisionesPor" ><?php
+                $te=$this->totalWSremision['total'];
+                $tot=($te*100)/$this->totalWSRemisionComplete['total'];
+                echo round($tot,2);
+                ?>%</label></td></tr>
+                <tr><td>Cot a Ov</td><td><label class="pull-right" id="eCotToOv" style="margin-right: 3em;"><?php echo number_format($this->totalWScotov['total'],0,'.',',');?></label></td><td><label class="pull-right" id="eCotToOvPor" ><?php
+                $te=$this->totalWScotov['total'];
+                $tot=($te*100)/$this->totalWScotovComplete['total'];
+                echo round($tot,2);
+                ?>%</label></td></tr>
+                <tr><td>Cliente Nuevo</td><td><label class="pull-right" id="eNewClient" style="margin-right: 3em;"><?php echo number_format($this->enewClient['total'],0,'.',',');?></label></td><td><label class="pull-right" id="eNewClientPor" ><?php 
+                $te=$this->enewClient['total'];
+                $tot=($te*100)/$this->newClient['total'];
+                echo round($tot,2);
+                ?>%</label></td></tr>
+                <tr><td>Impresión en PDF</td><td><label class="pull-right" id="ePdf" style="margin-right: 3em;"><?php echo number_format($this->epdf['total'],0,'.',',');?></label></td><td><label class="pull-right" id="ePdfPor" ><?php 
+                $te=$this->epdf['total'];
+                $tot=($te*100)/$this->pdf['total'];
+                echo round($tot,2);
+                ?>%</label></td></tr>
+            </table>
+            <span class="pull-left"></span>
+            <span >
+                
+                
+            </span>
+        </div>
+    </div>
+</div>
+<div class="col-lg-3 col-md-6">
+    <div class="panel panel-yellow">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-3">
+                    <i class="fa fa-ban fa-5x"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                    <div class="huge" id="totalProcentaje"><?php
+                            $tt=$this->totalWS['total'];
+                            $te=$this->totalWSerror['total'];
+                            $tot=($te*100)/$tt;
+                            echo round($tot,2).'%';
+                        ?></div>
+                    <div>No completados</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+<div class="col-lg-4">
+    <div class="panel panel-primary">
+          <div class="panel-heading">Total Facturas
+            <div class="pull-right">
+                <div class="btn-group">
+                  <input type="date" name="f1tbl" id="f1tbl5" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl5();"> al
+                  <input type="date" name="f2tbl" id="f2tbl5" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl5();">
+                </div>
+            </div>
+          </div>  
+          <div class="panel-body">
+             <div id="chart_div"><center><img src="../application/assets/img/gif-load.gif" style="width: 6em;"></center></div>
+          </div>
+    </div>    
+</div>
+<div class="col-lg-4">
+    <div class="panel panel-primary">
+          <div class="panel-heading">Grafica facturas 
+            <div class="pull-right">
+                <div class="btn-group">
+                  <input type="date" name="f1tb6" id="f1tbl6" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl6();"> al
+                  <input type="date" name="f2tb6" id="f2tbl6" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl6();">
+                </div>
+            </div>
+          </div>  
+          <div class="panel-body">
+             <div id="chart_div2"><center><img src="../application/assets/img/gif-load.gif" style="width: 6em;"></center></div>
+          </div>
+    </div>    
+</div>
+<div class="col-lg-4">
+    <div class="panel panel-primary">
+          <div class="panel-heading">Grafica facturas general
+            <div class="pull-right">
+                <div class="btn-group">
+                  <input type="date" name="f1tb6" id="f1tbl7" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl7();"> al
+                  <input type="date" name="f2tb6" id="f2tbl7" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl7();">
+                </div>
+            </div>
+          </div>  
+          <div class="panel-body">
+             <div id="chart_div3"><center><img src="../application/assets/img/gif-load.gif" style="width: 6em;"></center></div>
+          </div>
+    </div>    
+</div>
+<div class="col-md-5">
+    <div class="panel panel-primary">
+          <div class="panel-heading">Tabla de facturas hechas en inax 
+            <div class="pull-right">
+                <div class="btn-group">
+                  <input type="date" name="f1tbl" id="f1tbl3" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl3();"> al
+                  <input type="date" name="f2tbl" id="f2tbl3" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl3();">
+                </div>
+            </div>
+          </div>  
+          <div class="panel-body">
+              <table id="tblReport3" class="tbl table-striped">
+                  <thead>
+                      <tr>
+                          <th>USUARIO</th><th>CANTIDAD</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>          
+              </table>
+          </div>
+    </div>
+</div>
+<div class="col-md-7">
+    <div class="panel panel-primary">
+          <div class="panel-heading">Tabla de facturas hechas en inax 
+            <div class="pull-right">
+                <div class="btn-group">
+                  <input type="date" name="f1tbl" id="f1tbl4" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl4();"> al
+                  <input type="date" name="f2tbl" id="f2tbl4" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl4();">
+                </div>
+            </div>
+          </div>  
+          <div class="panel-body">
+              <table id="tblReport4" class="tbl table-striped">
+                  <thead>
+                      <tr>
+                          <th>SUCURSAL</th><th>CANTIDAD</th>
+                      </tr>
+                  </thead>
+                  <tbody></tbody>          
+              </table>
+          </div>
+    </div>
+</div>
+<div class="col-md-5">
+    <div class="panel panel-primary">
+        <div class="panel-heading">Falla de inax por usuario 
+            <div class="pull-right">
+                <div class="btn-group">
+                    <input type="date" name="f1tbl2" id="f1tbl2" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl2();"> al
+                    <input type="date" name="f2tbl2" id="f2tbl2" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl2();">
+                </div>
+            </div>
+          </div>  
+          <div class="panel-body">
+              <table id="tblReport2" class="tbl table-striped">
+                  <thead>
+                      <tr>
+                          <th>USUARIO</th><th>CONTEO</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <?php                  
+                      foreach ($this->errorUser as $k => $value) {
+                          echo '<tr><td>'.$value['USUARIO'].'</td><td>'.$value['C'].'</td></tr>' ;        
+                      }
+                      ?>
+                  </tbody>          
+              </table>
+          </div>
+    </div>
+</div>
+<div class="col-md-7">
+    <div class="panel panel-primary">
+          <div class="panel-heading">Tabla de falla de inax 
+            <div class="pull-right">
+                <div class="btn-group">
+                  <input type="date" name="f1tbl" id="f1tbl" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl();"> al
+                  <input type="date" name="f2tbl" id="f2tbl" value="<?= $this->fechaInput ?>" style="color: black;" onchange="filterTbl();">
+                </div>
+            </div>
+          </div>  
+          <div class="panel-body">
+              <table id="tblReport" class="tbl table-striped">
+                  <thead>
+                      <tr>
+                          <th>#</th><th>USUARIO</th><th>FECHA</th><th>TIPO DE MOV</th><th>IP</th><th>ESTATUS</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <?php                  
+                      foreach ($this->totalWStbl as $k => $value) {
+                          if($value['ESTATUS']==2){$value['ESTATUS']="Error";}
+                          else{$value['ESTATUS']="Ok";}
+                          echo '<tr><td>'.$value['ID'].'</td><td>'.$value['USUARIO'].'</td><td>'.$value['FECHA'].'</td><td>'.$value['TIPO'].'</td><td>'.$value['IP'].'</td><td>'.$value['ESTATUS'].'</td></tr>' ;        
+                      }
+                      ?>
+                  </tbody>          
+              </table>
+          </div>
+    </div>
+</div>
+<script src="<?= JAVASCRIPT_PATH ?>/views/fallasinax.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>
+<script type="text/javascript" src="<?= JAVASCRIPT_PATH ?>/googleCharts.js"></script>
+<script>
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(filterTbl5);
+    google.charts.setOnLoadCallback(filterTbl6);
+    google.charts.setOnLoadCallback(filterTbl7);
+    filter();
+    filterTbl();
+    filterTbl3();
+    filterTbl2();
+    filterTbl4();
+    setInterval(function(){
+        filter();
+        filterTbl5();
+        filterTbl6();
+        filterTbl7();
+    },60000); 
+ </script>

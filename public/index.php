@@ -27,7 +27,7 @@ require_once 'Zend/Application.php';
 $application = new Zend_Application( APPLICATION_ENV,APPLICATION_PATH . ''.APP_INI);
 Zend_Session::start();
 /** Constants of APP */
-//require_once APPLICATION_PATH.'/models/UserConstants.php';
+require_once APPLICATION_PATH.'/models/UserConstants.php';
 //require_once APPLICATION_PATH.'/../library/includes/atpWs/DynamicsWSConsumer.php';
 /* this line run the appplication for all*/
 //$application->bootstrap()->run();

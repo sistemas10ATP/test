@@ -25,7 +25,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
 require_once 'Zend/Application.php';
 
 
-echo PRODUCCION;
+echo APPLICATION_ENV;
 // Create application, bootstrap, and run
 $application = new Zend_Application( APPLICATION_ENV,APPLICATION_PATH . ''.APP_INI);
 Zend_Session::start();

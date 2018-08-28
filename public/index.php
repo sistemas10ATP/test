@@ -23,11 +23,11 @@ set_include_path(implode(PATH_SEPARATOR, array(
 
 /** Zend_Application */
 require_once 'Zend/Application.php';
-
-
-echo APPLICATION_ENV;
 // Create application, bootstrap, and run
 $application = new Zend_Application( APPLICATION_ENV,APPLICATION_PATH . ''.APP_INI);
+var_dump($application);
+exit();
+
 Zend_Session::start();
 /** Constants of APP */
 //require_once APPLICATION_PATH.'/models/UserConstants.php';

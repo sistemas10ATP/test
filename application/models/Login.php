@@ -55,7 +55,7 @@ class Application_Model_Login {
         $company="";
         $ldap_host = "DC01";
         $ldap_dn = "DC=atp,DC=local";
-        $ldap_usr_dom = "@atp.local";
+        $ldap_usr_dom = "@avanceytec.onmicrosoft.com";
         $ldap = ldap_connect($ldap_host);
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0) or die('Unable to set LDAP opt referrals');
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3) or die('Unable to set LDAP           protocol     version');

@@ -8,17 +8,20 @@
 function send(){
     var dataForm=$("#login").serialize();
     $.ajax({
-        //url:"http://intranet.enlaceatp.net/ldap",
+        //url:"http://intranet.enlaceatp.net/ldap/",
         url:"http://intra/ldap/",
         data: dataForm,
         dataType: 'json',
         type: 'POST',
         beforeSend: function (xhr) {
-            var img='<img src="../application/assets/img/cargando.gif" style="width: 0.5em;">';
+            var img='<img src="../application/assets/img/cargando.gif" style="width: 5em;">';
             $('#result').html(img);
         },
         success: function (data, textStatus, jqXHR) {
             $('#result').html("");
+            if(data.result==="ok"){
+                localStorage.setItem("session", data);
+            }
             console.log(data);
         },
         error: function (jqXHR, textStatus, errorThrown) {

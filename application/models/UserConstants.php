@@ -12,7 +12,7 @@
 (CONFIG==DESARROLLO) ? define('INTERNA','INTERNA2.INTERNA') : define('INTERNA','INTERNA');
 define("COMPANY",'ATP'); 
 define("IMAGEN_PDF",__DIR__."/../../../assets/img"); 
-define("VERSION", "inAX Versión: 2.3");
+define("VERSION", "inAX Versión: 2.4");
 //define('WEB_SERVICE_URL', WSDL.'.xml');
 define('WEB_SERVICE_URL', 'http://' . CONFIG . '/MicrosoftDynamicsAXAif60/STFSalesOrderWebService/xppservice.svc?wsdl');
 define('WEB_SERVICE_INVOICE_URL', 'http://' . CONFIG . '/MicrosoftDynamicsAXAif60/STFWSInvoicePayment/xppservice.svc?wsdl');

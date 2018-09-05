@@ -20,9 +20,16 @@ function send(){
         success: function (data, textStatus, jqXHR) {
             $('#result').html("");
             if(data.result==="ok"){
-                localStorage.setItem("session", data);
+                localStorage.setItem("session", data.result);
+                localStorage.setItem("company_name", data.company_name);
+                localStorage.setItem("company_rfc", data.company_rfc);
+                localStorage.setItem("depto", data.depto);
+                localStorage.setItem("email", data.email);
+                localStorage.setItem("nomuser", data.nomuser);
+                localStorage.setItem("user", data.user);
+                localStorage.setItem("username", data.username);
+                window.location.href = "inax/";                
             }
-            console.log(localStorage.getItem("session"));
         },
         error: function (jqXHR, textStatus, errorThrown) {
             $('#result').html("");

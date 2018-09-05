@@ -10,7 +10,7 @@
  */
 
 (CONFIG==DESARROLLO) ? define('INTERNA','INTERNA2.INTERNA') : define('INTERNA','INTERNA');
-define("COMPANY",$_SESSION['company']); 
+define("COMPANY",'ATP'); 
 define("IMAGEN_PDF",__DIR__."/../../../assets/img"); 
 define("VERSION", "inAX Versión: 2.3");
 //define('WEB_SERVICE_URL', WSDL.'.xml');

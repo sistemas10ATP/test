@@ -20,7 +20,7 @@
                         <br> <img src="<?= IMAGES_PATH ?>/logo_inax.png" style="margin-top: 20px"> <br>
                         <br>
                     </div>
-                    <form action="login" method="post">
+                    <form action="login" method="post" id="login">
                         <div class="row">
                             <div class="input-field col l10 offset-l1">
                                 <i class="mdi-action-account-circle prefix"></i> 
@@ -36,15 +36,15 @@
                             </div>
                         </div>
                         <div class="row">
-                            <?php if ($this->error == 1) echo '<p class="center-align offset-l1 col l10" style="background: #df8989; border: 1px solid #ca3838; color: #7b2121;">Usuario y/o Contraseña Incorrectos</p>'; ?>
-                            <?php if ($this->error == 4) echo '<p class="center-align offset-l1 col l10" style="background: #df8989; border: 1px solid #ca3838; color: #7b2121;">No autorizado para iniciar sesión</p>'; ?>
+                            <span id="result"></span>
                             <div class="offset-l7 col l4">
-                                <button class="btn waves-effect waves-light light-blue darken-4" type="submit" name="action">Iniciar Sesión <i class="mdi-content-send right"></i></button>
+                                <button class="btn waves-effect waves-light light-blue darken-4" type="button" onclick="send()" name="action">Iniciar Sesión <i class="mdi-content-send right"></i></button>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+        <script src="<?= JAVASCRIPT_PATH ?>/views/login.js?v=<?php echo date("d"); ?>" type="text/javascript"></script>
     </body>
 </html>

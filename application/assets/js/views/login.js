@@ -28,7 +28,7 @@ function send(){
                 localStorage.setItem("nomuser", data.nomuser);
                 localStorage.setItem("user", data.user);
                 localStorage.setItem("username", data.username);
-                window.location.href = "/";                
+                window.location.href = "/inax";                
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {

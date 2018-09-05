@@ -9,7 +9,7 @@ function send(){
     var dataForm=$("#login").serialize();
     $.ajax({
         //url:"http://intranet.enlaceatp.net/ldap",
-        url:"http://intra/ldap",
+        url:"http://intra/ldap/",
         data: dataForm,
         dataType: 'json',
         type: 'POST',

@@ -22,7 +22,7 @@ function send(){
             if(data.result==="ok"){
                 localStorage.setItem("session", data);
             }
-            console.log(data);
+            console.log(localStorage.getItem("session"));
         },
         error: function (jqXHR, textStatus, errorThrown) {
             $('#result').html("");

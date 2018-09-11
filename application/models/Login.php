@@ -53,8 +53,8 @@ class Application_Model_Login {
 
     public function authenticate($user, $password){
         $company="";
-        $ldap_host = "DC01";
-        $ldap_dn = "DC=atp,DC=local";
+        $ldap_host = "avanceytec.onmicrosoft.com";
+        $ldap_dn = "DC=avanceytec.onmicrosoft.com,DC=avanceytec.onmicrosoft.com";
         $ldap_usr_dom = "@avanceytec.onmicrosoft.com";
         $ldap = ldap_connect($ldap_host);
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0) or die('Unable to set LDAP opt referrals');
